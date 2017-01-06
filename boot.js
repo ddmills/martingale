@@ -76,6 +76,20 @@ var Game = function (_Phaser$State) {
 
       this.backgroundLayer = this.map.createLayer('background');
       this.backgroundLayer.resizeWorld();
+
+      this.cursor = this.game.add.graphics();
+      this.cursor.lineStyle(1, 0xff9ae6, 1);
+      this.cursor.drawRect(0, 0, 16, 16);
+
+      this.game.input.addMoveCallback(this.updateCursor, this);
+    }
+  }, {
+    key: 'updateCursor',
+    value: function updateCursor() {
+      var mouseX = this.game.input.activePointer.worldX;
+      var mouseY = this.game.input.activePointer.worldY;
+      this.cursor.x = this.backgroundLayer.getTileX(mouseX) * 16;
+      this.cursor.y = this.backgroundLayer.getTileY(mouseY) * 16;
     }
   }]);
 
