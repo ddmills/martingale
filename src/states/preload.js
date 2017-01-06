@@ -8,7 +8,7 @@ export default class Preload extends Phaser.State {
     this.game.scale.setUserScale(2, 2);
 
     this.game.renderer.renderSession.roundPixels = true;
-    Phaser.Canvas.setImageRenderingCrisp(this.game.canvas)
+    Phaser.Canvas.setImageRenderingCrisp(this.game.canvas);
 
     this.state.start('Loading');
   }
