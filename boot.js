@@ -168,6 +168,11 @@ var Preload = function (_Phaser$State) {
     key: 'create',
     value: function create() {
       this.game.stage.backgroundColor = '#362d18';
+      this.game.scale.scaleMode = Phaser.ScaleManager.USER_SCALE;
+      this.game.scale.setUserScale(2, 2);
+
+      this.game.renderer.renderSession.roundPixels = true;
+      Phaser.Canvas.setImageRenderingCrisp(this.game.canvas);
 
       this.state.start('Loading');
     }
