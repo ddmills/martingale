@@ -7,7 +7,11 @@ export default class Loading extends Phaser.State {
 
     this.load.tilemap('island', 'maps/island.json', null, Phaser.Tilemap.TILED_JSON);
     this.load.image('tile-ground', 'img/ground.png');
+
+    this.load.image('tower', 'img/tower.png');
+    this.load.image('flag', 'img/flag.png');
   }
+
   create() {
     this.game.stage.smoothed = false;
     this.stage.backgroundColor = '#362d18';

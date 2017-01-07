@@ -1,3 +1,5 @@
+import Tower from '../prefabs/tower';
+
 export default class Game extends Phaser.State {
   create() {
     this.map = this.game.add.tilemap('island');
@@ -5,6 +7,8 @@ export default class Game extends Phaser.State {
 
     this.backgroundLayer = this.map.createLayer('background');
     this.backgroundLayer.resizeWorld();
+
+    this.buildings = this.game.add.group();
 
     this.cursor = this.game.add.graphics();
     this.cursor.lineStyle(1, 0xd698c7, 1);
@@ -24,7 +28,15 @@ export default class Game extends Phaser.State {
 
     if (this.game.input.mousePointer.isDown) {
       const tile = this.map.getTile(tileX, tileY, 'background');
-      console.log(!!tile.properties.buildable);
+      if (Tower.canBePlacedAt(tile)) {
+        this.placeTower(tile);
+      }
     }
+  }
+
+  placeTower(tile) {
+    const tower = this.buildings.add(new Tower(this.game, tile));
+    this.buildings.sort('y', Phaser.Group.SORT_ASCENDING);
+    return tower;
   }
 };

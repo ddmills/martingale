@@ -36,7 +36,7 @@ gulp.task('babel', () => {
     .pipe(gulp.dest('build'));
 });
 
-gulp.task('watch', () => {
+gulp.task('watch', ['build'], () => {
   const options = {
     server: {
       baseDir: 'build',
