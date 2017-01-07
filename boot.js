@@ -44,7 +44,7 @@ var Boot = function (_Phaser$Game) {
 
 new Boot();
 
-},{"./states/game":2,"./states/loading":3,"./states/preload":4}],2:[function(require,module,exports){
+},{"./states/game":3,"./states/loading":4,"./states/preload":5}],2:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -52,6 +52,52 @@ Object.defineProperty(exports, "__esModule", {
 });
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var Tower = function (_Phaser$TileSprite) {
+  _inherits(Tower, _Phaser$TileSprite);
+
+  function Tower(game, tile) {
+    _classCallCheck(this, Tower);
+
+    var _this = _possibleConstructorReturn(this, (Tower.__proto__ || Object.getPrototypeOf(Tower)).call(this, game, tile.worldX, tile.worldY - 16, 16, 32, 'tower'));
+
+    _this.tile = tile;
+    _this.tile.properties.buildable = false;
+    return _this;
+  }
+
+  _createClass(Tower, null, [{
+    key: 'canBePlacedAt',
+    value: function canBePlacedAt(tile) {
+      return !!tile.properties.buildable;
+    }
+  }]);
+
+  return Tower;
+}(Phaser.TileSprite);
+
+exports.default = Tower;
+
+},{}],3:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _tower = require('../prefabs/tower');
+
+var _tower2 = _interopRequireDefault(_tower);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -77,6 +123,8 @@ var Game = function (_Phaser$State) {
       this.backgroundLayer = this.map.createLayer('background');
       this.backgroundLayer.resizeWorld();
 
+      this.buildings = this.game.add.group();
+
       this.cursor = this.game.add.graphics();
       this.cursor.lineStyle(1, 0xd698c7, 1);
       this.cursor.drawRect(0, 0, 16, 16);
@@ -96,8 +144,17 @@ var Game = function (_Phaser$State) {
 
       if (this.game.input.mousePointer.isDown) {
         var tile = this.map.getTile(tileX, tileY, 'background');
-        console.log(!!tile.properties.buildable);
+        if (_tower2.default.canBePlacedAt(tile)) {
+          this.placeTower(tile);
+        }
       }
+    }
+  }, {
+    key: 'placeTower',
+    value: function placeTower(tile) {
+      var tower = this.buildings.add(new _tower2.default(this.game, tile));
+      this.buildings.sort('y', Phaser.Group.SORT_ASCENDING);
+      return tower;
     }
   }]);
 
@@ -107,7 +164,7 @@ var Game = function (_Phaser$State) {
 exports.default = Game;
 ;
 
-},{}],3:[function(require,module,exports){
+},{"../prefabs/tower":2}],4:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -141,6 +198,9 @@ var Loading = function (_Phaser$State) {
 
       this.load.tilemap('island', 'maps/island.json', null, Phaser.Tilemap.TILED_JSON);
       this.load.image('tile-ground', 'img/ground.png');
+
+      this.load.image('tower', 'img/tower.png');
+      this.load.image('flag', 'img/flag.png');
     }
   }, {
     key: 'create',
@@ -157,7 +217,7 @@ var Loading = function (_Phaser$State) {
 exports.default = Loading;
 ;
 
-},{}],4:[function(require,module,exports){
+},{}],5:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
