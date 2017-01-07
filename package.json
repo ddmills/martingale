@@ -4,7 +4,7 @@
   "scripts": {
     "build": "gulp build",
     "deploy": "gulp deploy",
-    "dev": "gulp dev"
+    "watch": "gulp watch"
   },
   "devDependencies": {
     "babel-preset-es2015": "^6.18.0",

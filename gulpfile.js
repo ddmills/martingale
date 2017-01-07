@@ -36,12 +36,12 @@ gulp.task('babel', () => {
     .pipe(gulp.dest('build'));
 });
 
-gulp.task('dev', () => {
+gulp.task('watch', () => {
   const options = {
     server: {
       baseDir: 'build',
     },
-    open: true,
+    open: false,
   };
 
   browserSync(options);

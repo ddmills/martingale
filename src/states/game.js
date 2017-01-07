@@ -7,7 +7,7 @@ export default class Game extends Phaser.State {
     this.backgroundLayer.resizeWorld();
 
     this.cursor = this.game.add.graphics();
-    this.cursor.lineStyle(1, 0xff9ae6, 1);
+    this.cursor.lineStyle(1, 0xd698c7, 1);
     this.cursor.drawRect(0, 0, 16, 16);
 
     this.game.input.addMoveCallback(this.updateCursor, this);
@@ -16,7 +16,15 @@ export default class Game extends Phaser.State {
   updateCursor() {
     const mouseX = this.game.input.activePointer.worldX;
     const mouseY = this.game.input.activePointer.worldY;
-    this.cursor.x = this.backgroundLayer.getTileX(mouseX) * 16;
-    this.cursor.y = this.backgroundLayer.getTileY(mouseY) * 16;
+    const tileX = this.backgroundLayer.getTileX(mouseX);
+    const tileY = this.backgroundLayer.getTileY(mouseY);
+
+    this.cursor.x = tileX * 16;
+    this.cursor.y = tileY * 16;
+
+    if (this.game.input.mousePointer.isDown) {
+      const tile = this.map.getTile(tileX, tileY, 'background');
+      console.log(!!tile.properties.buildable);
+    }
   }
 };
