@@ -10,9 +10,9 @@ export default class Game extends Phaser.State {
 
     this.buildings = this.game.add.group();
 
-    this.cursor = this.game.add.graphics();
-    this.cursor.lineStyle(1, 0xd698c7, 1);
-    this.cursor.drawRect(0, 0, 16, 16);
+    this.cursor = this.game.add.sprite(32, 32, 'cursor');
+    this.cursor.animations.add('spin');
+    this.cursor.animations.play('spin', 15, true);
 
     this.game.input.addMoveCallback(this.updateCursor, this);
   }
