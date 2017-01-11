@@ -1,3 +1,3 @@
-import Tilemap from './tilemap';
+import Tile from './tile';
 
-Phaser.Tilemap = Tilemap;
+Phaser.Tile = Tile;

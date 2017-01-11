@@ -5,7 +5,8 @@ export default class Loading extends Phaser.State {
     this.loadingBar.anchor.setTo(0.5);
     this.load.setPreloadSprite(this.loadingBar);
 
-    this.load.image('tile-ground', 'img/ground.png');
+    this.load.image('ground', 'img/ground.png');
+    this.load.image('wall', 'img/walls.png');
     this.load.image('tower', 'img/tower.png');
     this.load.image('flag', 'img/flag.png');
 

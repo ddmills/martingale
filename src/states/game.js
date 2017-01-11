@@ -3,7 +3,7 @@ import Tower from '../prefabs/tower';
 export default class Game extends Phaser.State {
   create() {
     this.map = this.game.add.tilemap('island');
-    this.map.addTilesetImage('ground', 'tile-ground');
+    this.map.addTilesetImage('ground', 'ground');
 
     this.backgroundLayer = this.map.createLayer('background');
     this.backgroundLayer.resizeWorld();
@@ -30,15 +30,8 @@ export default class Game extends Phaser.State {
       const tile = this.map.getTile(tileX, tileY, 'background');
 
       if (Tower.canBePlacedAt(tile)) {
-        const sum = this.map.binarySum(
-          tileX,
-          tileY,
-          'background',
-          t => !!t.properties.buildable
-        );
-
-        // const sum = tile.binarySum(t => !!t.properties.buildable);
-        console.log('BIN SUM', sum);
+        const sum = tile.binarySum(t => !!t.properties.buildable);
+        console.log('BIN SUM (x, y, Σ)', tile.x, tile.y, sum);
         this.placeTower(tile);
       }
     }
