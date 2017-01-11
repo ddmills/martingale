@@ -49,15 +49,15 @@ new Boot();
 },{"./phaser/bootstrap":2,"./states/game":5,"./states/loading":6,"./states/preload":7}],2:[function(require,module,exports){
 'use strict';
 
-var _tilemap = require('./tilemap');
+var _tile = require('./tile');
 
-var _tilemap2 = _interopRequireDefault(_tilemap);
+var _tile2 = _interopRequireDefault(_tile);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-Phaser.Tilemap = _tilemap2.default;
+Phaser.Tile = _tile2.default;
 
-},{"./tilemap":3}],3:[function(require,module,exports){
+},{"./tile":3}],3:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -72,33 +72,35 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var Tilemap = function (_Phaser$Tilemap) {
-  _inherits(Tilemap, _Phaser$Tilemap);
+var Tile = function (_Phaser$Tile) {
+  _inherits(Tile, _Phaser$Tile);
 
-  function Tilemap() {
-    _classCallCheck(this, Tilemap);
+  function Tile() {
+    _classCallCheck(this, Tile);
 
-    return _possibleConstructorReturn(this, (Tilemap.__proto__ || Object.getPrototypeOf(Tilemap)).apply(this, arguments));
+    return _possibleConstructorReturn(this, (Tile.__proto__ || Object.getPrototypeOf(Tile)).apply(this, arguments));
   }
 
-  _createClass(Tilemap, [{
+  _createClass(Tile, [{
     key: "binarySum",
-    value: function binarySum(centerX, centerY, layer, test) {
-      var sum = 0;
 
+    /**
+     * Get binary sum of all neighbors.
+     */
+    value: function binarySum(test) {
+      var sum = 0;
       var multiplier = 256;
+
       for (var i = -1; i <= 1; i++) {
-        var y = centerY - i;
+        var y = this.y - i;
+        var row = this.layer.data[y];
 
         for (var j = -1; j <= 1; j++) {
           if (i === 0 && j === 0) continue;
-          var x = centerX - j;
+          var x = this.x - j;
+          var tile = row && x in row ? row[x] : null;
 
-          var tile = this.getTile(x, y, layer);
-
-          if (test(tile)) {
-            sum += multiplier;
-          }
+          if (test(tile)) sum += multiplier;
 
           multiplier /= 2;
         }
@@ -106,12 +108,54 @@ var Tilemap = function (_Phaser$Tilemap) {
 
       return sum;
     }
+
+    /**
+     * Get binary sum of neighbors only taking into account
+     * the top, left, right, and bottom tiles.
+     */
+
+  }, {
+    key: "binarySumSimple",
+    value: function binarySumSimple(test) {
+      var _this2 = this;
+
+      var sum = 0;
+
+      var getNeighbor = function getNeighbor(x, y) {
+        if (y in _this2.layer.data) {
+          if (x in _this2.layer.data[y]) return _this2.layer.data[x][y];
+        }
+        return null;
+      };
+
+      var top = getNeighbor(this.y - 1, this.x);
+      var left = getNeighbor(this.y, this.x - 1);
+      var right = getNeighbor(this.y, this.x + 1);
+      var bottom = getNeighbor(this.y + 1, this.x);
+
+      if (test(top)) sum += 4;
+      if (test(left)) sum += 16;
+      if (test(right)) sum += 32;
+      if (test(bottom)) sum += 128;
+
+      return sum;
+    }
+
+    /**
+     * Boolean check if this tile exists on the layer boundary
+     */
+
+  }, {
+    key: "atBoundary",
+    value: function atBoundary() {
+      return this.x === 0 || this.y === 0 || this.x === this.layer.width - 1 || this.y === this.layer.height - 1;
+    }
   }]);
 
-  return Tilemap;
-}(Phaser.Tilemap);
+  return Tile;
+}(Phaser.Tile);
 
-exports.default = Tilemap;
+exports.default = Tile;
 
 },{}],4:[function(require,module,exports){
 'use strict';
@@ -144,7 +188,7 @@ var Tower = function (_Phaser$TileSprite) {
   _createClass(Tower, null, [{
     key: 'canBePlacedAt',
     value: function canBePlacedAt(tile) {
-      return !!tile.properties.buildable;
+      return !!tile && !tile.atBoundary() && !!tile.properties.buildable;
     }
   }]);
 
@@ -187,7 +231,7 @@ var Game = function (_Phaser$State) {
     key: 'create',
     value: function create() {
       this.map = this.game.add.tilemap('island');
-      this.map.addTilesetImage('ground', 'tile-ground');
+      this.map.addTilesetImage('ground', 'ground');
 
       this.backgroundLayer = this.map.createLayer('background');
       this.backgroundLayer.resizeWorld();
@@ -215,12 +259,10 @@ var Game = function (_Phaser$State) {
         var tile = this.map.getTile(tileX, tileY, 'background');
 
         if (_tower2.default.canBePlacedAt(tile)) {
-          var sum = this.map.binarySum(tileX, tileY, 'background', function (t) {
-            return !!t.properties.buildable;
+          var sum = tile.binarySum(function (t) {
+            return !!t && !!t.properties.buildable;
           });
-
-          // const sum = tile.binarySum(t => !!t.properties.buildable);
-          console.log('BIN SUM', sum);
+          console.log('\u03A3 ' + sum);
           this.placeTower(tile);
         }
       }
@@ -272,7 +314,8 @@ var Loading = function (_Phaser$State) {
       this.loadingBar.anchor.setTo(0.5);
       this.load.setPreloadSprite(this.loadingBar);
 
-      this.load.image('tile-ground', 'img/ground.png');
+      this.load.image('ground', 'img/ground.png');
+      this.load.image('wall', 'img/walls.png');
       this.load.image('tower', 'img/tower.png');
       this.load.image('flag', 'img/flag.png');
 
