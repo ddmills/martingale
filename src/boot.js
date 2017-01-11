@@ -1,3 +1,4 @@
+import './phaser/bootstrap';
 import Preload from './states/preload';
 import Loading from './states/loading';
 import Game from './states/game';

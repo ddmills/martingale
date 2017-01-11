@@ -28,7 +28,17 @@ export default class Game extends Phaser.State {
 
     if (this.game.input.mousePointer.isDown) {
       const tile = this.map.getTile(tileX, tileY, 'background');
+
       if (Tower.canBePlacedAt(tile)) {
+        const sum = this.map.binarySum(
+          tileX,
+          tileY,
+          'background',
+          t => !!t.properties.buildable
+        );
+
+        // const sum = tile.binarySum(t => !!t.properties.buildable);
+        console.log('BIN SUM', sum);
         this.placeTower(tile);
       }
     }
