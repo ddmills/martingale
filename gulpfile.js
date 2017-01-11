@@ -30,7 +30,10 @@ gulp.task('babel', () => {
   return bundler
     .transform(babel, { presets: ['es2015'] })
     .bundle()
-    .on('error', gutil.log)
+    .on('error', function(err) {
+      gutil.log(err);
+      this.emit('end');
+    })
     .pipe(source('boot.js'))
     .pipe(buffer())
     .pipe(gulp.dest('build'));

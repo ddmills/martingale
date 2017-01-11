@@ -30,8 +30,8 @@ export default class Game extends Phaser.State {
       const tile = this.map.getTile(tileX, tileY, 'background');
 
       if (Tower.canBePlacedAt(tile)) {
-        const sum = tile.binarySum(t => !!t.properties.buildable);
-        console.log('BIN SUM (x, y, Σ)', tile.x, tile.y, sum);
+        const sum = tile.binarySum(t => !!t && !!t.properties.buildable);
+        console.log(`Σ ${sum}`);
         this.placeTower(tile);
       }
     }

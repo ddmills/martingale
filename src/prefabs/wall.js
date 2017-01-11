@@ -6,6 +6,6 @@ export default class Wall extends Phaser.TileSprite {
   }
 
   static canBePlacedAt(tile) {
-    return !!tile && !!tile.properties && !!tile.properties.buildable;
+    return !!tile && !tile.atBoundary() && !!tile.properties.buildable;
   }
 }

@@ -6,6 +6,6 @@ export default class Tower extends Phaser.TileSprite {
   }
 
   static canBePlacedAt(tile) {
-    return !!tile.properties.buildable;
+    return !!tile && !tile.atBoundary() && !!tile.properties.buildable;
   }
 }
