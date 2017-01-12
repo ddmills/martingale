@@ -29,7 +29,7 @@ var Boot = function (_Phaser$Game) {
   function Boot() {
     _classCallCheck(this, Boot);
 
-    var _this = _possibleConstructorReturn(this, (Boot.__proto__ || Object.getPrototypeOf(Boot)).call(this, 320, 320, Phaser.AUTO, 'game-container', null, false, false));
+    var _this = _possibleConstructorReturn(this, (Boot.__proto__ || Object.getPrototypeOf(Boot)).call(this, 640, 640, Phaser.AUTO, 'game-container', null, false, false));
 
     _this.state.add('Preload', _preload2.default);
     _this.state.add('Loading', _loading2.default);
@@ -46,7 +46,7 @@ var Boot = function (_Phaser$Game) {
 
 new Boot();
 
-},{"./phaser/bootstrap":2,"./states/game":5,"./states/loading":6,"./states/preload":7}],2:[function(require,module,exports){
+},{"./phaser/bootstrap":2,"./states/game":6,"./states/loading":7,"./states/preload":8}],2:[function(require,module,exports){
 'use strict';
 
 var _tile = require('./tile');
@@ -206,9 +206,153 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var Wall = function (_Phaser$Sprite) {
+  _inherits(Wall, _Phaser$Sprite);
+
+  function Wall(game, tile) {
+    _classCallCheck(this, Wall);
+
+    var _this = _possibleConstructorReturn(this, (Wall.__proto__ || Object.getPrototypeOf(Wall)).call(this, game, tile.worldX, tile.worldY - 16, 'walls', 'segment-n'));
+
+    _this.tile = tile;
+    var segment = _this.getSegment();
+    _this.frameName = segment;
+    _this.tile.properties.buildable = false;
+    return _this;
+  }
+
+  _createClass(Wall, [{
+    key: 'mapSumToSegment',
+    value: function mapSumToSegment(sum) {
+      switch (sum) {
+        case 128:
+        case 192:
+        case 320:
+        case 384:
+        case 448:
+          return 'segment-e-t';
+        case 4:
+        case 6:
+        case 10:
+        case 12:
+        case 14:
+          return 'segment-e-b';
+        case 16:
+        case 18:
+        case 66:
+        case 80:
+        case 82:
+          return 'segment-e-r';
+        case 32:
+        case 40:
+        case 288:
+        case 264:
+        case 296:
+          return 'segment-e-l';
+
+        case 256:
+          return 'segment-e-tl';
+        case 64:
+          return 'segment-e-tr';
+        case 8:
+          return 'segment-e-bl';
+        case 2:
+          return 'segment-e-br';
+
+        case 20:
+        case 22:
+        case 26:
+        case 30:
+        case 70:
+        case 78:
+        case 86:
+        case 88:
+        case 90:
+        case 94:
+          return 'segment-i-tl';
+        case 36:
+        case 38:
+        case 42:
+        case 44:
+        case 46:
+        case 260:
+        case 268:
+        case 270:
+        case 292:
+        case 294:
+        case 298:
+        case 300:
+        case 302:
+          return 'segment-i-tr';
+        case 130:
+        case 210:
+        case 386:
+        case 400:
+        case 450:
+        case 464:
+        case 466:
+          return 'segment-i-bl';
+        case 96:
+        case 104:
+        case 160:
+        case 168:
+        case 328:
+        case 352:
+        case 360:
+        case 416:
+        case 456:
+        case 480:
+        case 488:
+          return 'segment-i-br';
+        default:
+          return 'segment-n';
+      };
+    }
+  }, {
+    key: 'getSegment',
+    value: function getSegment() {
+      var sum = this.tile.binarySum(function (t) {
+        return !!t && !!t.properties.floor;
+      });
+
+      console.log(sum);
+
+      return this.mapSumToSegment(sum);
+    }
+  }], [{
+    key: 'canBePlacedAt',
+    value: function canBePlacedAt(tile) {
+      return !!tile && !tile.atBoundary() && !!tile.properties.buildable;
+    }
+  }]);
+
+  return Wall;
+}(Phaser.Sprite);
+
+exports.default = Wall;
+
+},{}],6:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
 var _tower = require('../prefabs/tower');
 
 var _tower2 = _interopRequireDefault(_tower);
+
+var _wall = require('../prefabs/wall');
+
+var _wall2 = _interopRequireDefault(_wall);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -230,11 +374,12 @@ var Game = function (_Phaser$State) {
   _createClass(Game, [{
     key: 'create',
     value: function create() {
-      this.map = this.game.add.tilemap('island');
+      this.map = this.game.add.tilemap('crazytown');
       this.map.addTilesetImage('ground', 'ground');
 
       this.backgroundLayer = this.map.createLayer('background');
       this.backgroundLayer.resizeWorld();
+      // this.showBinarySums();
 
       this.buildings = this.game.add.group();
 
@@ -243,6 +388,24 @@ var Game = function (_Phaser$State) {
       this.cursor.animations.play('spin', 15, true);
 
       this.game.input.addMoveCallback(this.updateCursor, this);
+    }
+  }, {
+    key: 'showBinarySums',
+    value: function showBinarySums() {
+      var style = {
+        font: "8px Arial",
+        fill: "#1fe83f"
+      };
+
+      for (var i = 0; i < this.map.height; i++) {
+        for (var j = 0; j < this.map.width; j++) {
+          var tile = this.map.getTile(j, i, this.backgroundLayer);
+          var sum = tile.binarySum(function (t) {
+            return !!t && !!t.properties.floor;
+          });
+          this.game.add.text(tile.worldX, tile.worldY, sum, style);
+        }
+      }
     }
   }, {
     key: 'updateCursor',
@@ -255,16 +418,28 @@ var Game = function (_Phaser$State) {
       this.cursor.x = tileX * 16;
       this.cursor.y = tileY * 16;
 
-      if (this.game.input.mousePointer.isDown) {
-        var tile = this.map.getTile(tileX, tileY, 'background');
+      if (this.game.input.mousePointer.leftButton.isDown) {
+        this.onLeftMouseDown(tileX, tileY);
+      }
 
-        if (_tower2.default.canBePlacedAt(tile)) {
-          var sum = tile.binarySum(function (t) {
-            return !!t && !!t.properties.buildable;
-          });
-          console.log('\u03A3 ' + sum);
-          this.placeTower(tile);
-        }
+      if (this.game.input.mousePointer.rightButton.isDown) {
+        this.onRightMouseDown(tileX, tileY);
+      }
+    }
+  }, {
+    key: 'onLeftMouseDown',
+    value: function onLeftMouseDown(tileX, tileY) {
+      var tile = this.map.getTile(tileX, tileY, this.backgroundLayer);
+      if (_wall2.default.canBePlacedAt(tile)) {
+        this.placeWall(tile);
+      }
+    }
+  }, {
+    key: 'onRightMouseDown',
+    value: function onRightMouseDown(tileX, tileY) {
+      var tile = this.map.getTile(tileX, tileY, this.backgroundLayer);
+      if (_tower2.default.canBePlacedAt(tile)) {
+        this.placeTower(tile);
       }
     }
   }, {
@@ -274,6 +449,13 @@ var Game = function (_Phaser$State) {
       this.buildings.sort('y', Phaser.Group.SORT_ASCENDING);
       return tower;
     }
+  }, {
+    key: 'placeWall',
+    value: function placeWall(tile) {
+      var wall = this.buildings.add(new _wall2.default(this.game, tile));
+      this.buildings.sort('y', Phaser.Group.SORT_ASCENDING);
+      return wall;
+    }
   }]);
 
   return Game;
@@ -282,7 +464,7 @@ var Game = function (_Phaser$State) {
 exports.default = Game;
 ;
 
-},{"../prefabs/tower":4}],6:[function(require,module,exports){
+},{"../prefabs/tower":4,"../prefabs/wall":5}],7:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -320,8 +502,10 @@ var Loading = function (_Phaser$State) {
       this.load.image('flag', 'img/flag.png');
 
       this.load.tilemap('island', 'maps/island.json', null, Phaser.Tilemap.TILED_JSON);
+      this.load.tilemap('crazytown', 'maps/crazytown.json', null, Phaser.Tilemap.TILED_JSON);
 
       this.load.spritesheet('cursor', 'img/cursor.png', 16, 16);
+      this.load.atlas('walls', 'img/walls.png', 'atlas/walls.json');
     }
   }, {
     key: 'create',
@@ -338,7 +522,7 @@ var Loading = function (_Phaser$State) {
 exports.default = Loading;
 ;
 
-},{}],7:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
