@@ -577,7 +577,7 @@ var Preload = function (_Phaser$State) {
     value: function create() {
       this.game.stage.backgroundColor = '#362d18';
       this.game.scale.scaleMode = Phaser.ScaleManager.USER_SCALE;
-      this.game.scale.setUserScale(2, 2);
+      this.game.scale.setUserScale(1, 1);
 
       this.game.renderer.renderSession.roundPixels = true;
       Phaser.Canvas.setImageRenderingCrisp(this.game.canvas);
