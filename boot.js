@@ -46,7 +46,7 @@ var Boot = function (_Phaser$Game) {
 
 new Boot();
 
-},{"./phaser/bootstrap":2,"./states/game":6,"./states/loading":7,"./states/preload":8}],2:[function(require,module,exports){
+},{"./phaser/bootstrap":2,"./states/game":7,"./states/loading":8,"./states/preload":9}],2:[function(require,module,exports){
 'use strict';
 
 var _tile = require('./tile');
@@ -168,6 +168,71 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
+var Map = function () {
+  function Map(game, level) {
+    _classCallCheck(this, Map);
+
+    this.game = game;
+    this.tilemap = this.game.add.tilemap(level);
+    this.tilemap.addTilesetImage('ground', 'ground');
+
+    this.layers = {
+      background: this.tilemap.createLayer('background'),
+      floor: this.tilemap.createLayer('floor')
+    };
+
+    this.buildings = this.game.add.group();
+  }
+
+  // TODO: Extract to a 'floor' class
+
+
+  _createClass(Map, [{
+    key: 'canPlaceFloor',
+    value: function canPlaceFloor(tileX, tileY) {
+      var tile = this.tilemap.getTile(tileX, tileY, this.layers.background);
+      return !!tile && !!tile.properties.buildable;
+    }
+
+    // TODO: Extract to a 'floor' class
+
+  }, {
+    key: 'placeFloor',
+    value: function placeFloor(tileX, tileY) {
+      this.tilemap.putTile(12, tileX, tileY, this.layers.floor);
+    }
+  }, {
+    key: 'getTileX',
+    value: function getTileX(mouseX) {
+      var layer = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'background';
+
+      return this.layers[layer].getTileX(mouseX);
+    }
+  }, {
+    key: 'getTileY',
+    value: function getTileY(mouseY) {
+      var layer = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'background';
+
+      return this.layers[layer].getTileY(mouseY);
+    }
+  }]);
+
+  return Map;
+}();
+
+exports.default = Map;
+
+},{}],5:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
@@ -197,7 +262,7 @@ var Tower = function (_Phaser$TileSprite) {
 
 exports.default = Tower;
 
-},{}],5:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -337,7 +402,7 @@ var Wall = function (_Phaser$Sprite) {
 
 exports.default = Wall;
 
-},{}],6:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -353,6 +418,10 @@ var _tower2 = _interopRequireDefault(_tower);
 var _wall = require('../prefabs/wall');
 
 var _wall2 = _interopRequireDefault(_wall);
+
+var _map = require('../prefabs/map');
+
+var _map2 = _interopRequireDefault(_map);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -374,14 +443,7 @@ var Game = function (_Phaser$State) {
   _createClass(Game, [{
     key: 'create',
     value: function create() {
-      this.map = this.game.add.tilemap('crazytown');
-      this.map.addTilesetImage('ground', 'ground');
-
-      this.backgroundLayer = this.map.createLayer('background');
-      this.backgroundLayer.resizeWorld();
-      // this.showBinarySums();
-
-      this.buildings = this.game.add.group();
+      this.map = new _map2.default(this.game, 'crazytown');
 
       this.cursor = this.game.add.sprite(32, 32, 'cursor');
       this.cursor.animations.add('spin');
@@ -390,30 +452,12 @@ var Game = function (_Phaser$State) {
       this.game.input.addMoveCallback(this.updateCursor, this);
     }
   }, {
-    key: 'showBinarySums',
-    value: function showBinarySums() {
-      var style = {
-        font: "8px Arial",
-        fill: "#1fe83f"
-      };
-
-      for (var i = 0; i < this.map.height; i++) {
-        for (var j = 0; j < this.map.width; j++) {
-          var tile = this.map.getTile(j, i, this.backgroundLayer);
-          var sum = tile.binarySum(function (t) {
-            return !!t && !!t.properties.floor;
-          });
-          this.game.add.text(tile.worldX, tile.worldY, sum, style);
-        }
-      }
-    }
-  }, {
     key: 'updateCursor',
     value: function updateCursor() {
       var mouseX = this.game.input.activePointer.worldX;
       var mouseY = this.game.input.activePointer.worldY;
-      var tileX = this.backgroundLayer.getTileX(mouseX);
-      var tileY = this.backgroundLayer.getTileY(mouseY);
+      var tileX = this.map.getTileX(mouseX);
+      var tileY = this.map.getTileY(mouseY);
 
       this.cursor.x = tileX * 16;
       this.cursor.y = tileY * 16;
@@ -429,32 +473,9 @@ var Game = function (_Phaser$State) {
   }, {
     key: 'onLeftMouseDown',
     value: function onLeftMouseDown(tileX, tileY) {
-      var tile = this.map.getTile(tileX, tileY, this.backgroundLayer);
-      if (_wall2.default.canBePlacedAt(tile)) {
-        this.placeWall(tile);
+      if (this.map.canPlaceFloor(tileX, tileY)) {
+        this.map.placeFloor(tileX, tileY);
       }
-    }
-  }, {
-    key: 'onRightMouseDown',
-    value: function onRightMouseDown(tileX, tileY) {
-      var tile = this.map.getTile(tileX, tileY, this.backgroundLayer);
-      if (_tower2.default.canBePlacedAt(tile)) {
-        this.placeTower(tile);
-      }
-    }
-  }, {
-    key: 'placeTower',
-    value: function placeTower(tile) {
-      var tower = this.buildings.add(new _tower2.default(this.game, tile));
-      this.buildings.sort('y', Phaser.Group.SORT_ASCENDING);
-      return tower;
-    }
-  }, {
-    key: 'placeWall',
-    value: function placeWall(tile) {
-      var wall = this.buildings.add(new _wall2.default(this.game, tile));
-      this.buildings.sort('y', Phaser.Group.SORT_ASCENDING);
-      return wall;
     }
   }]);
 
@@ -464,7 +485,7 @@ var Game = function (_Phaser$State) {
 exports.default = Game;
 ;
 
-},{"../prefabs/tower":4,"../prefabs/wall":5}],7:[function(require,module,exports){
+},{"../prefabs/map":4,"../prefabs/tower":5,"../prefabs/wall":6}],8:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -522,7 +543,7 @@ var Loading = function (_Phaser$State) {
 exports.default = Loading;
 ;
 
-},{}],8:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
