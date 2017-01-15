@@ -46,7 +46,209 @@ var Boot = function (_Phaser$Game) {
 
 new Boot();
 
-},{"./phaser/bootstrap":2,"./states/game":7,"./states/loading":8,"./states/preload":9}],2:[function(require,module,exports){
+},{"./phaser/bootstrap":6,"./states/game":12,"./states/loading":13,"./states/preload":14}],2:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Command = function () {
+  function Command() {
+    _classCallCheck(this, Command);
+  }
+
+  _createClass(Command, [{
+    key: "execute",
+    value: function execute() {}
+  }]);
+
+  return Command;
+}();
+
+exports.default = Command;
+
+},{}],3:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _command = require('./command');
+
+var _command2 = _interopRequireDefault(_command);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var MoveCursorCommand = function (_Command) {
+  _inherits(MoveCursorCommand, _Command);
+
+  function MoveCursorCommand(cursor, mouseX, mouseY) {
+    _classCallCheck(this, MoveCursorCommand);
+
+    var _this = _possibleConstructorReturn(this, (MoveCursorCommand.__proto__ || Object.getPrototypeOf(MoveCursorCommand)).call(this));
+
+    _this.cursor = cursor;
+    _this.mouseX = mouseX;
+    _this.mouseY = mouseY;
+    return _this;
+  }
+
+  _createClass(MoveCursorCommand, [{
+    key: 'execute',
+    value: function execute() {
+      this.cursor.move(this.mouseX, this.mouseY);
+    }
+  }]);
+
+  return MoveCursorCommand;
+}(_command2.default);
+
+exports.default = MoveCursorCommand;
+
+},{"./command":2}],4:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _command = require('./command');
+
+var _command2 = _interopRequireDefault(_command);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var PlaceFloorCommand = function (_Command) {
+  _inherits(PlaceFloorCommand, _Command);
+
+  function PlaceFloorCommand(map, mouseX, mouseY) {
+    _classCallCheck(this, PlaceFloorCommand);
+
+    var _this = _possibleConstructorReturn(this, (PlaceFloorCommand.__proto__ || Object.getPrototypeOf(PlaceFloorCommand)).call(this));
+
+    _this.map = map;
+    _this.mouseX = mouseX;
+    _this.mouseY = mouseY;
+    return _this;
+  }
+
+  _createClass(PlaceFloorCommand, [{
+    key: 'execute',
+    value: function execute() {
+      var x = this.map.getTileX(this.mouseX);
+      var y = this.map.getTileX(this.mouseY);
+
+      this.map.placeFloor(x, y);
+    }
+  }]);
+
+  return PlaceFloorCommand;
+}(_command2.default);
+
+exports.default = PlaceFloorCommand;
+
+},{"./command":2}],5:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _moveCursorCommand = require('./commands/move-cursor-command');
+
+var _moveCursorCommand2 = _interopRequireDefault(_moveCursorCommand);
+
+var _placeFloorCommand = require('./commands/place-floor-command');
+
+var _placeFloorCommand2 = _interopRequireDefault(_placeFloorCommand);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var InputHandler = function () {
+  function InputHandler(input, map, cursor) {
+    _classCallCheck(this, InputHandler);
+
+    this.input = input;
+    this.map = map;
+    this.cursor = cursor;
+    this.oldMouseX = 0;
+    this.oldMouseY = 0;
+  }
+
+  _createClass(InputHandler, [{
+    key: 'handle',
+    value: function handle() {
+      this.mouseX = this.input.activePointer.worldX;
+      this.mouseY = this.input.activePointer.worldY;
+
+      if (this.leftMouseButtonDown) {
+        var command = new _placeFloorCommand2.default(this.map, this.mouseX, this.mouseY);
+
+        command.execute();
+      }
+
+      if (this.rightMouseButtonDown) {
+        console.log('rmb');
+      }
+
+      if (this.mousePositionChanged) {
+        var _command = new _moveCursorCommand2.default(this.cursor, this.mouseX, this.mouseY);
+
+        _command.execute();
+      }
+
+      this.oldMouseX = this.mouseX;
+      this.oldMouseY = this.mouseY;
+    }
+  }, {
+    key: 'mousePositionChanged',
+    get: function get() {
+      return this.oldMouseX != this.mouseX || this.oldMouseY != this.mouseY;
+    }
+  }, {
+    key: 'leftMouseButtonDown',
+    get: function get() {
+      return this.input.mousePointer.leftButton.isDown;
+    }
+  }, {
+    key: 'rightMouseButtonDown',
+    get: function get() {
+      return this.input.mousePointer.rightButton.isDown;
+    }
+  }]);
+
+  return InputHandler;
+}();
+
+exports.default = InputHandler;
+
+},{"./commands/move-cursor-command":3,"./commands/place-floor-command":4}],6:[function(require,module,exports){
 'use strict';
 
 var _tile = require('./tile');
@@ -57,7 +259,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 Phaser.Tile = _tile2.default;
 
-},{"./tile":3}],3:[function(require,module,exports){
+},{"./tile":7}],7:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -157,7 +359,7 @@ var Tile = function (_Phaser$Tile) {
 
 exports.default = Tile;
 
-},{}],4:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -165,6 +367,75 @@ Object.defineProperty(exports, "__esModule", {
 });
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Cursor = function () {
+  function Cursor(game) {
+    var x = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+    var y = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
+
+    _classCallCheck(this, Cursor);
+
+    this.game = game;
+    this.sprite = this.game.add.sprite(0, 0, 'cursor');
+
+    this.x = x;
+    this.y = y;
+
+    this.sprite.animations.add('spin');
+    this.sprite.animations.play('spin', 15, true);
+
+    this.sprite.tint = 0xb8f2f4;
+  }
+
+  _createClass(Cursor, [{
+    key: 'move',
+    value: function move(mouseX, mouseY) {
+      this.x = this.game.math.snapToFloor(mouseX, 16);
+      this.y = this.game.math.snapToFloor(mouseY, 16);
+    }
+  }, {
+    key: 'x',
+    get: function get() {
+      return this.sprite.x;
+    },
+    set: function set(v) {
+      this.sprite.x = v;
+    }
+  }, {
+    key: 'y',
+    get: function get() {
+      return this.sprite.y;
+    },
+    set: function set(v) {
+      this.sprite.y = v;
+    }
+  }]);
+
+  return Cursor;
+}();
+
+exports.default = Cursor;
+
+},{}],9:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _strata = require('./strata');
+
+var _strata2 = _interopRequireDefault(_strata);
+
+var _wall = require('./wall');
+
+var _wall2 = _interopRequireDefault(_wall);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -182,24 +453,56 @@ var Map = function () {
     };
 
     this.buildings = this.game.add.group();
+
+    this.strata = [];
+    for (var i = 0; i < this.height; i++) {
+      this.strata.push([]);
+      for (var j = 0; j < this.width; j++) {
+        var s = new _strata2.default(this, j, i);
+        this.strata[i].push(s);
+      }
+    }
   }
 
-  // TODO: Extract to a 'floor' class
+  // TODO: Extract and refactor
 
 
   _createClass(Map, [{
-    key: 'canPlaceFloor',
-    value: function canPlaceFloor(tileX, tileY) {
-      var tile = this.tilemap.getTile(tileX, tileY, this.layers.background);
-      return !!tile && !!tile.properties.buildable;
-    }
-
-    // TODO: Extract to a 'floor' class
-
-  }, {
     key: 'placeFloor',
     value: function placeFloor(tileX, tileY) {
-      this.tilemap.putTile(12, tileX, tileY, this.layers.floor);
+      var _this = this;
+
+      var strata = this.getStrata(tileX, tileY);
+      if (strata.floorTile) return;
+
+      var sum = strata.binarySum(function (s) {
+        if (s && s.backgroundTile) {
+          if (s.backgroundTile.properties.buildable) {
+            return false;
+          }
+        }
+        return true;
+      });
+
+      if (sum === 0) {
+        this.tilemap.putTile(12, tileX, tileY, this.layers.floor);
+
+        if (strata.wall) {
+          strata.wall.destroy();
+          strata.wall = null;
+        }
+
+        strata.neighbors.forEach(function (s) {
+          if (s.floorTile) return;
+          if (s.wall) {
+            s.wall.refreshSegment();
+          } else {
+            var wall = new _wall2.default(_this.game, s);
+            _this.buildings.add(wall);
+          }
+        });
+        this.buildings.sort('y');
+      }
     }
   }, {
     key: 'getTileX',
@@ -215,6 +518,43 @@ var Map = function () {
 
       return this.layers[layer].getTileY(mouseY);
     }
+  }, {
+    key: 'getWorldX',
+    value: function getWorldX(tileX) {
+      return tileX * 16;
+    }
+  }, {
+    key: 'getWorldY',
+    value: function getWorldY(tileY) {
+      return tileY * 16;
+    }
+  }, {
+    key: 'getTile',
+    value: function getTile(x, y) {
+      var layer = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 'background';
+
+      return this.tilemap.getTile(x, y, layer);
+    }
+  }, {
+    key: 'isOutOfBounds',
+    value: function isOutOfBounds(x, y) {
+      return x < 0 || y < 0 || x >= this.width || y >= this.height;
+    }
+  }, {
+    key: 'getStrata',
+    value: function getStrata(x, y) {
+      return this.isOutOfBounds(x, y) ? null : this.strata[y][x];
+    }
+  }, {
+    key: 'width',
+    get: function get() {
+      return this.layers.background.width / 16;
+    }
+  }, {
+    key: 'height',
+    get: function get() {
+      return this.layers.background.height / 16;
+    }
   }]);
 
   return Map;
@@ -222,7 +562,7 @@ var Map = function () {
 
 exports.default = Map;
 
-},{}],5:[function(require,module,exports){
+},{"./strata":10,"./wall":11}],10:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -233,36 +573,74 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+var Strata = function () {
+  function Strata(map, x, y) {
+    _classCallCheck(this, Strata);
 
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var Tower = function (_Phaser$TileSprite) {
-  _inherits(Tower, _Phaser$TileSprite);
-
-  function Tower(game, tile) {
-    _classCallCheck(this, Tower);
-
-    var _this = _possibleConstructorReturn(this, (Tower.__proto__ || Object.getPrototypeOf(Tower)).call(this, game, tile.worldX, tile.worldY - 16, 16, 32, 'tower'));
-
-    _this.tile = tile;
-    _this.tile.properties.buildable = false;
-    return _this;
+    this.map = map;
+    this.x = x;
+    this.y = y;
+    this.worldX = this.map.getWorldX(this.x);
+    this.worldY = this.map.getWorldY(this.y);
   }
 
-  _createClass(Tower, null, [{
-    key: 'canBePlacedAt',
-    value: function canBePlacedAt(tile) {
-      return !!tile && !tile.atBoundary() && !!tile.properties.buildable;
+  _createClass(Strata, [{
+    key: 'binarySum',
+    value: function binarySum(test) {
+      var sum = 0;
+      var multiplier = 256;
+
+      for (var i = -1; i <= 1; i++) {
+        var y = this.y - i;
+
+        for (var j = -1; j <= 1; j++) {
+          if (i === 0 && j === 0) continue;
+          var x = this.x - j;
+          var strata = this.map.getStrata(x, y);
+
+          if (test(strata)) sum += multiplier;
+
+          multiplier /= 2;
+        }
+      }
+
+      return sum;
+    }
+  }, {
+    key: 'backgroundTile',
+    get: function get() {
+      return this.map.getTile(this.x, this.y, 'background');
+    }
+  }, {
+    key: 'floorTile',
+    get: function get() {
+      return this.map.getTile(this.x, this.y, 'floor');
+    }
+  }, {
+    key: 'neighbors',
+    get: function get() {
+      var nb = [];
+
+      for (var i = -1; i <= 1; i++) {
+        var y = this.y - i;
+        for (var j = -1; j <= 1; j++) {
+          if (i === 0 && j === 0) continue;
+          var x = this.x - j;
+          var strata = this.map.getStrata(x, y);
+          if (strata) nb.push(strata);
+        }
+      }
+
+      return nb;
     }
   }]);
 
-  return Tower;
-}(Phaser.TileSprite);
+  return Strata;
+}();
 
-exports.default = Tower;
+exports.default = Strata;
 
-},{}],6:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -280,19 +658,26 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 var Wall = function (_Phaser$Sprite) {
   _inherits(Wall, _Phaser$Sprite);
 
-  function Wall(game, tile) {
+  function Wall(game, strata) {
     _classCallCheck(this, Wall);
 
-    var _this = _possibleConstructorReturn(this, (Wall.__proto__ || Object.getPrototypeOf(Wall)).call(this, game, tile.worldX, tile.worldY - 16, 'walls', 'segment-n'));
+    var _this = _possibleConstructorReturn(this, (Wall.__proto__ || Object.getPrototypeOf(Wall)).call(this, game, strata.worldX, strata.worldY - 16, 'walls', 'segment-n'));
 
-    _this.tile = tile;
-    var segment = _this.getSegment();
-    _this.frameName = segment;
-    _this.tile.properties.buildable = false;
+    _this.strata = strata;
+    _this.strata.wall = _this;
+    _this.refreshSegment();
     return _this;
   }
 
   _createClass(Wall, [{
+    key: 'refreshSegment',
+    value: function refreshSegment() {
+      var sum = this.strata.binarySum(function (s) {
+        return !!s && !!s.floorTile;
+      });
+      this.frameName = this.mapSumToSegment(sum);
+    }
+  }, {
     key: 'mapSumToSegment',
     value: function mapSumToSegment(sum) {
       switch (sum) {
@@ -379,22 +764,6 @@ var Wall = function (_Phaser$Sprite) {
           return 'segment-n';
       };
     }
-  }, {
-    key: 'getSegment',
-    value: function getSegment() {
-      var sum = this.tile.binarySum(function (t) {
-        return !!t && !!t.properties.floor;
-      });
-
-      console.log(sum);
-
-      return this.mapSumToSegment(sum);
-    }
-  }], [{
-    key: 'canBePlacedAt',
-    value: function canBePlacedAt(tile) {
-      return !!tile && !tile.atBoundary() && !!tile.properties.buildable;
-    }
   }]);
 
   return Wall;
@@ -402,7 +771,7 @@ var Wall = function (_Phaser$Sprite) {
 
 exports.default = Wall;
 
-},{}],7:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -411,17 +780,17 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _tower = require('../prefabs/tower');
-
-var _tower2 = _interopRequireDefault(_tower);
-
-var _wall = require('../prefabs/wall');
-
-var _wall2 = _interopRequireDefault(_wall);
-
 var _map = require('../prefabs/map');
 
 var _map2 = _interopRequireDefault(_map);
+
+var _cursor = require('../prefabs/cursor');
+
+var _cursor2 = _interopRequireDefault(_cursor);
+
+var _inputHandler = require('../input/input-handler');
+
+var _inputHandler2 = _interopRequireDefault(_inputHandler);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -444,38 +813,13 @@ var Game = function (_Phaser$State) {
     key: 'create',
     value: function create() {
       this.map = new _map2.default(this.game, 'crazytown');
-
-      this.cursor = this.game.add.sprite(32, 32, 'cursor');
-      this.cursor.animations.add('spin');
-      this.cursor.animations.play('spin', 15, true);
-
-      this.game.input.addMoveCallback(this.updateCursor, this);
+      this.cursor = new _cursor2.default(this.game);
+      this.inputHandler = new _inputHandler2.default(this.game.input, this.map, this.cursor);
     }
   }, {
-    key: 'updateCursor',
-    value: function updateCursor() {
-      var mouseX = this.game.input.activePointer.worldX;
-      var mouseY = this.game.input.activePointer.worldY;
-      var tileX = this.map.getTileX(mouseX);
-      var tileY = this.map.getTileY(mouseY);
-
-      this.cursor.x = tileX * 16;
-      this.cursor.y = tileY * 16;
-
-      if (this.game.input.mousePointer.leftButton.isDown) {
-        this.onLeftMouseDown(tileX, tileY);
-      }
-
-      if (this.game.input.mousePointer.rightButton.isDown) {
-        this.onRightMouseDown(tileX, tileY);
-      }
-    }
-  }, {
-    key: 'onLeftMouseDown',
-    value: function onLeftMouseDown(tileX, tileY) {
-      if (this.map.canPlaceFloor(tileX, tileY)) {
-        this.map.placeFloor(tileX, tileY);
-      }
+    key: 'update',
+    value: function update() {
+      this.inputHandler.handle();
     }
   }]);
 
@@ -485,7 +829,7 @@ var Game = function (_Phaser$State) {
 exports.default = Game;
 ;
 
-},{"../prefabs/map":4,"../prefabs/tower":5,"../prefabs/wall":6}],8:[function(require,module,exports){
+},{"../input/input-handler":5,"../prefabs/cursor":8,"../prefabs/map":9}],13:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -543,7 +887,7 @@ var Loading = function (_Phaser$State) {
 exports.default = Loading;
 ;
 
-},{}],9:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
