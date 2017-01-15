@@ -9,6 +9,7 @@ https://ddmills.github.io/martingale
 #### Setup
 
 ```
+$ yarn install
 $ yarn run watch
 ```
 

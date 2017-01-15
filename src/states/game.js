@@ -6,7 +6,7 @@ export default class Game extends Phaser.State {
   create() {
     this.map = new Map(this.game, 'crazytown');
     this.cursor = new Cursor(this.game);
-    this.inputHandler = new InputHandler(this.game.input, this.cursor);
+    this.inputHandler = new InputHandler(this.game.input, this.map, this.cursor);
   }
 
   update() {

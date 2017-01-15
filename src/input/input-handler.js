@@ -1,8 +1,10 @@
-import MoveCursorCommand from './move-cursor-command';
+import MoveCursorCommand from './commands/move-cursor-command';
+import PlaceFloorCommand from './commands/place-floor-command';
 
 export default class InputHandler {
-  constructor(input, cursor) {
+  constructor(input, map, cursor) {
     this.input = input;
+    this.map = map;
     this.cursor = cursor;
     this.oldMouseX = 0;
     this.oldMouseY = 0;
@@ -13,7 +15,13 @@ export default class InputHandler {
     this.mouseY = this.input.activePointer.worldY;
 
     if (this.leftMouseButtonDown) {
-      console.log('lmb');
+      const command = new PlaceFloorCommand(
+        this.map,
+        this.mouseX,
+        this.mouseY
+      );
+
+      command.execute();
     }
 
     if (this.rightMouseButtonDown) {

@@ -1,3 +1,5 @@
+import Strata from './strata';
+import Wall from './wall';
 
 export default class Map {
   constructor(game, level) {
@@ -11,17 +13,50 @@ export default class Map {
     };
 
     this.buildings = this.game.add.group();
+
+    this.strata = [];
+    for (let i = 0; i < this.height; i++) {
+      this.strata.push([]);
+      for (let j = 0; j < this.width; j++) {
+        const s = new Strata(this, j, i);
+        this.strata[i].push(s);
+      }
+    }
   }
 
-  // TODO: Extract to a 'floor' class
-  canPlaceFloor(tileX, tileY) {
-    const tile = this.tilemap.getTile(tileX, tileY, this.layers.background);
-    return !!tile && !!tile.properties.buildable;
-  }
-
-  // TODO: Extract to a 'floor' class
+  // TODO: Extract and refactor
   placeFloor(tileX, tileY) {
-    this.tilemap.putTile(12, tileX, tileY, this.layers.floor);
+    const strata = this.getStrata(tileX, tileY);
+    if (strata.floorTile) return;
+
+    const sum = strata.binarySum(s => {
+      if (s && s.backgroundTile) {
+        if (s.backgroundTile.properties.buildable) {
+          return false;
+        }
+      }
+      return true;
+    });
+
+    if (sum === 0) {
+      this.tilemap.putTile(12, tileX, tileY, this.layers.floor);
+
+      if (strata.wall) {
+        strata.wall.destroy();
+        strata.wall = null;
+      }
+
+      strata.neighbors.forEach(s => {
+        if (s.floorTile) return;
+        if (s.wall) {
+          s.wall.refreshSegment();
+        } else {
+          const wall = new Wall(this.game, s);
+          this.buildings.add(wall);
+        }
+      });
+      this.buildings.sort('y');
+    }
   }
 
   getTileX(mouseX, layer = 'background') {
@@ -30,5 +65,36 @@ export default class Map {
 
   getTileY(mouseY, layer = 'background') {
     return this.layers[layer].getTileY(mouseY);
+  }
+
+  getWorldX(tileX) {
+    return tileX * 16;
+  }
+
+  getWorldY(tileY) {
+    return tileY * 16;
+  }
+
+  getTile(x, y, layer = 'background') {
+    return this.tilemap.getTile(x, y, layer);
+  }
+
+  get width() {
+    return this.layers.background.width / 16;
+  }
+
+  get height() {
+    return this.layers.background.height / 16;
+  }
+
+  isOutOfBounds(x, y) {
+    return x < 0
+      || y < 0
+      || x >= this.width
+      || y >= this.height;
+  }
+
+  getStrata(x, y) {
+    return this.isOutOfBounds(x, y) ? null : this.strata[y][x];
   }
 }

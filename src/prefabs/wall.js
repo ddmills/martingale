@@ -1,10 +1,14 @@
 export default class Wall extends Phaser.Sprite {
-  constructor(game, tile) {
-    super(game, tile.worldX, tile.worldY - 16, 'walls', 'segment-n');
-    this.tile = tile;
-    const segment = this.getSegment();
-    this.frameName = segment;
-    this.tile.properties.buildable = false;
+  constructor(game, strata) {
+    super(game, strata.worldX, strata.worldY - 16, 'walls', 'segment-n');
+    this.strata = strata;
+    this.strata.wall = this;
+    this.refreshSegment();
+  }
+
+  refreshSegment() {
+    const sum = this.strata.binarySum(s => !!s && !!s.floorTile);
+    this.frameName = this.mapSumToSegment(sum);
   }
 
   mapSumToSegment(sum) {
@@ -91,17 +95,5 @@ export default class Wall extends Phaser.Sprite {
       default:
         return 'segment-n';
     };
-  }
-
-  getSegment() {
-    const sum = this.tile.binarySum(t => !!t && !!t.properties.floor);
-
-    console.log(sum);
-
-    return this.mapSumToSegment(sum);
-  }
-
-  static canBePlacedAt(tile) {
-    return !!tile && !tile.atBoundary() && !!tile.properties.buildable;
   }
 }
