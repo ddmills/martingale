@@ -9,6 +9,9 @@ export default class PlaceFloorCommand extends Command {
   }
 
   execute() {
+    console.log(this.mouseX);
+    console.log(this.mouseY);
+
     const x = this.map.getTileX(this.mouseX);
     const y = this.map.getTileX(this.mouseY);
 

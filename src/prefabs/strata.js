@@ -36,14 +36,30 @@ export default class Strata {
     return sum;
   }
 
+  binarySumSimple(test) {
+    let sum = 0;
+
+    const top = this.map.getStrata(this.x, this.y - 1);
+    const left = this.map.getStrata(this.x - 1, this.y);
+    const right = this.map.getStrata(this.x + 1, this.y);
+    const bottom = this.map.getStrata(this.x, this.y + 1);
+
+    if (test(top)) sum += 4;
+    if (test(left)) sum += 16;
+    if (test(right)) sum += 32;
+    if (test(bottom)) sum += 128;
+
+    return sum;
+  }
+
   get neighbors() {
     const nb = [];
 
     for (let i = -1; i <= 1; i++) {
-      const y = this.y - i;
+      const y = this.y + i;
       for (let j = -1; j <= 1; j++) {
         if (i === 0 && j === 0) continue;
-        const x = this.x - j;
+        const x = this.x + j;
         const strata = this.map.getStrata(x, y);
         if (strata) nb.push(strata);
       }

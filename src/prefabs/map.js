@@ -1,5 +1,6 @@
 import Strata from './strata';
 import Wall from './wall';
+import Interior from './interior';
 
 export default class Map {
   constructor(game, level) {
@@ -12,7 +13,8 @@ export default class Map {
       floor: this.tilemap.createLayer('floor'),
     };
 
-    this.buildings = this.game.add.group();
+    this.walls = this.game.add.group();
+    this.interiors = this.game.add.group();
 
     this.strata = [];
     for (let i = 0; i < this.height; i++) {
@@ -26,6 +28,7 @@ export default class Map {
 
   // TODO: Extract and refactor
   placeFloor(tileX, tileY) {
+    console.log('CLICK', tileX, tileY);
     const strata = this.getStrata(tileX, tileY);
     if (strata.floorTile) return;
 
@@ -44,18 +47,28 @@ export default class Map {
       if (strata.wall) {
         strata.wall.destroy();
         strata.wall = null;
+        strata.interior.destroy();
+        strata.interior = null;
+        console.log('destroyed interior');
       }
 
       strata.neighbors.forEach(s => {
-        if (s.floorTile) return;
-        if (s.wall) {
+        if (!!s.floorTile) return;
+        if (!!s.wall) {
           s.wall.refreshSegment();
         } else {
-          const wall = new Wall(this.game, s);
-          this.buildings.add(wall);
+          this.walls.add(new Wall(this.game, s));
+          this.interiors.add(new Interior(this.game, s));
         }
       });
-      this.buildings.sort('y');
+
+      strata.neighbors.forEach(s => {
+        if (!!s.wall) s.wall.refreshSegment();
+        if (!!s.interior) s.interior.refreshSegment();
+      });
+
+      this.walls.sort('y');
+      this.interiors.sort('y');
     }
   }
 
