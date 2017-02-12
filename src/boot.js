@@ -2,6 +2,8 @@ import './phaser/bootstrap';
 import Preload from './states/preload';
 import Loading from './states/loading';
 import Game from './states/game';
+import './components';
+import './entities';
 
 class Boot extends Phaser.Game {
   constructor() {
