@@ -1,5 +1,3 @@
-import Map from './prefabs/map';
-import Cursor from './prefabs/cursor';
 import EntityFactory from './entities/entity-factory';
 import CommandQueue from './input/command-queue';
 import MapInputController from './input/controllers/map-input-controller';
@@ -7,21 +5,15 @@ import MapInputController from './input/controllers/map-input-controller';
 class App {
   init(game) {
     this.game = game;
+    this.input = this.game.input;
     this.create = new EntityFactory;
-    this.map = new Map(this.game, 'crazytown');
-    this.cursor = new Cursor(this.game);
     this.commandQueue = new CommandQueue();
-    this.inputController = new MapInputController(
-      this.commandQueue,
-      this.game.input,
-      this.map,
-      this.cursor
-    );
+    this.inputController = new MapInputController();
   }
 
   get constants() {
     return {
-      'TILE_SIZE': 16,
+      'TILE_SIZE': 32,
     };
   }
 
@@ -34,11 +26,11 @@ class App {
   }
 
   tileX(worldX) {
-    return Math.floor(worldX / 16);
+    return Math.floor(worldX / this.constants.TILE_SIZE);
   }
 
   tileY(worldY) {
-    return Math.floor(worldY / 16);
+    return Math.floor(worldY / this.constants.TILE_SIZE);
   }
 
   update() {
@@ -47,7 +39,7 @@ class App {
   }
 };
 
-let app = new App();
+let app = new App;
 
 export { app };
 export default app;

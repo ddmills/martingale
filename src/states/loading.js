@@ -6,12 +6,14 @@ export default class Loading extends Phaser.State {
     this.load.setPreloadSprite(this.loadingBar);
 
     this.load.image('ground', 'img/ground.png');
+    this.load.image('terrain', 'img/terrain.png');
     this.load.image('wall', 'img/walls.png');
     this.load.image('tower', 'img/tower.png');
     this.load.image('flag', 'img/flag.png');
 
     this.load.tilemap('island', 'maps/island.json', null, Phaser.Tilemap.TILED_JSON);
     this.load.tilemap('crazytown', 'maps/crazytown.json', null, Phaser.Tilemap.TILED_JSON);
+    this.load.tilemap('tiny', 'maps/tiny.json', null, Phaser.Tilemap.TILED_JSON);
 
     this.load.spritesheet('cursor', 'img/cursor.png', 16, 16);
     this.load.atlas('walls', 'img/walls.png', 'atlas/walls.json');

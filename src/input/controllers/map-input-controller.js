@@ -1,22 +1,18 @@
-import MoveCursorCommand from '../commands/move-cursor-command';
-import PlaceFloorCommand from '../commands/place-floor-command';
 import SpawnEntityCommand from '../commands/spawn-entity-command';
 import InputController from './input-controller';
 import app from '../../app';
 
 export default class MapInputController extends InputController {
-  constructor(queue, input, map, cursor) {
-    super(queue);
-    this.input = input;
-    this.map = map;
-    this.cursor = cursor;
+  constructor() {
+    super(app.commandQueue);
+    this.cursor = app.cursor;
     this.oldMouseX = 0;
     this.oldMouseY = 0;
   }
 
   handle() {
-    this.mouseX = this.input.activePointer.worldX;
-    this.mouseY = this.input.activePointer.worldY;
+    this.mouseX = app.input.activePointer.worldX;
+    this.mouseY = app.input.activePointer.worldY;
     this.tileX = app.tileX(this.mouseX);
     this.tileY = app.tileY(this.mouseY);
 
@@ -24,21 +20,11 @@ export default class MapInputController extends InputController {
       const tower = app.create.tower(this.tileX, this.tileY);
       const command = new SpawnEntityCommand(tower);
 
-      this.queue.push(command);
+      this.queueCommand(command);
     }
 
     if (this.rightMouseButtonDown) {
       console.log('rmb');
-    }
-
-    if (this.mousePositionChanged) {
-      const command = new MoveCursorCommand(
-        this.cursor,
-        this.mouseX,
-        this.mouseY
-      );
-
-      this.queue.push(command);
     }
 
     this.oldMouseX = this.mouseX;
@@ -50,10 +36,10 @@ export default class MapInputController extends InputController {
   }
 
   get leftMouseButtonDown() {
-    return this.input.mousePointer.leftButton.isDown
+    return app.input.mousePointer.leftButton.isDown
   }
 
   get rightMouseButtonDown() {
-    return this.input.mousePointer.rightButton.isDown
+    return app.input.mousePointer.rightButton.isDown
   }
 }
