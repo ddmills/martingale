@@ -1,11 +1,12 @@
 import { entity } from 'geotic';
-import { app } from './../app';
+import { app } from '../app';
 
 
 export default (x, y) => {
-  const worldX = app.constants.TILE_SIZE * x;
-  const worldY = app.constants.TILE_SIZE * y;
+  const tower = entity()
+    .add('sprite', app.worldX(x), app.worldY(y) - 16, 16, 32, 'tower')
+    .add('spawnable')
+    .on('spawn', () => tower.render(app.map.walls));
 
-  return entity()
-    .add('sprite', worldX, worldY, 16, 32, 'tower');
+  return tower;
 };

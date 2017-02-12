@@ -1,1 +1,4 @@
-export { default as tower } from './tower';
+import tower from './tower';
+
+export { tower };
+export default { tower };

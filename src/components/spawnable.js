@@ -2,13 +2,15 @@ import { component } from 'geotic';
 import { app } from './../app';
 
 class Spawnable {
-  constructor(onSpawn) {
-    this.onSpawn = onSpawn;
+  constructor(entity) {
+    this.entity = entity;
+    this.entity.spawn = this.spawn.bind(this);
+  }
+
+  spawn() {
+    this.entity.emit('spawn');
+    return this.entity;
   }
 }
 
-component('spawnable', (entity, fn = () => {}) => {
-  const s = new Spawnable(fn);
-  entity.spawn = s.onSpawn.bind(s);
-  return s;
-});
+component('spawnable', entity => new Spawnable(entity));

@@ -1,6 +1,8 @@
 import MoveCursorCommand from '../commands/move-cursor-command';
 import PlaceFloorCommand from '../commands/place-floor-command';
+import SpawnEntityCommand from '../commands/spawn-entity-command';
 import InputController from './input-controller';
+import app from '../../app';
 
 export default class MapInputController extends InputController {
   constructor(queue, input, map, cursor) {
@@ -15,13 +17,12 @@ export default class MapInputController extends InputController {
   handle() {
     this.mouseX = this.input.activePointer.worldX;
     this.mouseY = this.input.activePointer.worldY;
+    this.tileX = app.tileX(this.mouseX);
+    this.tileY = app.tileY(this.mouseY);
 
     if (this.leftMouseButtonDown) {
-      const command = new PlaceFloorCommand(
-        this.map,
-        this.mouseX,
-        this.mouseY
-      );
+      const tower = app.create.tower(this.tileX, this.tileY);
+      const command = new SpawnEntityCommand(tower);
 
       this.queue.push(command);
     }
