@@ -16,7 +16,7 @@ export default class Game extends Phaser.State {
 
     this.commandQueue = new CommandQueue();
 
-    const t = tower();
+    const t = tower(15, 12);
 
     t.render(this.map.walls);
 
