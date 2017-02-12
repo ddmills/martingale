@@ -18,6 +18,7 @@
     "vinyl-source-stream": "^1.1.0"
   },
   "dependencies": {
+    "geotic": "^2.3.1",
     "phaser": "^2.6.2"
   }
 }

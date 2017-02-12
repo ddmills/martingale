@@ -1,21 +1,24 @@
+import app from '../app';
+
 import Map from '../prefabs/map';
 import Cursor from '../prefabs/cursor';
 import MapInputController from '../input/controllers/map-input-controller';
 import CommandQueue from '../input/command-queue';
 
-import PlaceFloorCommand from '../input/commands/place-floor-command';
+import '../components';
+import tower from '../entities/tower';
 
 export default class Game extends Phaser.State {
   create() {
+    app.game = this.game;
     this.map = new Map(this.game, 'crazytown');
     this.cursor = new Cursor(this.game);
 
+    this.commandQueue = new CommandQueue();
 
-    this.commandQueue = new CommandQueue([
-      new PlaceFloorCommand(this.map, 229, 282),
-      new PlaceFloorCommand(this.map, 245, 282),
-      new PlaceFloorCommand(this.map, 267, 282),
-    ]);
+    const t = tower();
+
+    t.render(this.map.walls);
 
     this.inputController = new MapInputController(
       this.commandQueue,
