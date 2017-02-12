@@ -28,7 +28,6 @@ export default class Map {
 
   // TODO: Extract and refactor
   placeFloor(tileX, tileY) {
-    console.log('CLICK', tileX, tileY);
     const strata = this.getStrata(tileX, tileY);
     if (strata.floorTile) return;
 
@@ -49,7 +48,6 @@ export default class Map {
         strata.wall = null;
         strata.interior.destroy();
         strata.interior = null;
-        console.log('destroyed interior');
       }
 
       strata.neighbors.forEach(s => {

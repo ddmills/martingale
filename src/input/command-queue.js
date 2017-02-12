@@ -1,6 +1,7 @@
 export default class CommandQueue {
   constructor(commands = []) {
-    this.commands = commands;
+    this.commands = [];
+    commands.forEach(c => this.push(c));
   }
 
   process() {
@@ -17,6 +18,7 @@ export default class CommandQueue {
   }
 
   push(command) {
+    console.log('pushing', command.constructor.name);
     this.commands.push(command);
   }
 }

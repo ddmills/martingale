@@ -8,7 +8,6 @@ export default class Interior extends Phaser.Sprite {
 
   refreshSegment() {
     const sum = this.strata.binarySumSimple(s => !!s && !!s.floorTile);
-    console.log('--->', this.strata.x, this.strata.y, sum);
     this.frameName = this.mapSumToSegment(sum);
   }
 
