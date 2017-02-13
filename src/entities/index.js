@@ -1,4 +1,6 @@
 import tower from './tower';
+import shrub from './shrub';
 
 export { tower };
-export default { tower };
+export { shrub };
+export default { tower, shrub };

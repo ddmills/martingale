@@ -17,8 +17,8 @@ export default class MapInputController extends InputController {
     this.tileY = app.tileY(this.mouseY);
 
     if (this.leftMouseButtonDown) {
-      const tower = app.create.tower(this.tileX, this.tileY);
-      const command = new SpawnEntityCommand(tower);
+      const shrub = app.create.shrub(this.tileX, this.tileY);
+      const command = new SpawnEntityCommand(shrub);
 
       this.queueCommand(command);
     }
