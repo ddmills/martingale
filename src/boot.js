@@ -7,7 +7,7 @@ import './entities';
 
 class Boot extends Phaser.Game {
   constructor() {
-    super(640, 640, Phaser.AUTO, 'game-container', null, false, false);
+    super(16 * 32, 16 * 32, Phaser.AUTO, 'game-container', null, false, false);
 
     this.state.add('Preload', Preload);
     this.state.add('Loading', Loading);

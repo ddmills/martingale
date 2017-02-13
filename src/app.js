@@ -8,7 +8,7 @@ class App {
     this.game = game;
     this.input = this.game.input;
     this.create = new EntityFactory;
-    this.map = new Map;
+    this.map = new Map('tiny');
     this.commandQueue = new CommandQueue();
     this.inputController = new MapInputController();
   }

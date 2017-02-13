@@ -22,7 +22,7 @@ export default class Loading extends Phaser.State {
 
   create() {
     this.game.stage.smoothed = false;
-    this.stage.backgroundColor = '#362d18';
+    this.stage.backgroundColor = '#306082';
     this.state.start('Game');
   }
 };
