@@ -1,12 +1,14 @@
 import EntityFactory from './entities/entity-factory';
 import CommandQueue from './input/command-queue';
 import MapInputController from './input/controllers/map-input-controller';
+import Map from './prefabs/map';
 
 class App {
   init(game) {
     this.game = game;
     this.input = this.game.input;
     this.create = new EntityFactory;
+    this.map = new Map;
     this.commandQueue = new CommandQueue();
     this.inputController = new MapInputController();
   }

@@ -1,5 +1,5 @@
 import { entity } from 'geotic';
-import { app } from '../app';
+import app from '../app';
 
 export default (x, y) => {
   const tower = entity()
