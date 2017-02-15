@@ -7,6 +7,7 @@ export default (x, y) => {
     .add('sprite', 'pine-tree')
     .add('position-bound-sprite', 0, -16)
     .add('spawnable')
+    .add('bounds')
     .once('spawn', () => {
       tree.render(app.map.static);
       app.map.static.sort('y');

@@ -5,10 +5,17 @@ export default class Game extends Phaser.State {
   create() {
     app.init(this.game);
 
-    app
+    const tree1 = app
       .create
-      .tower(15, 12)
+      .pineTree(8, 4)
       .spawn();
+
+    const tree2 = app
+      .create
+      .pineTree(6, 5)
+      .spawn();
+
+    console.log(tree1.bounds.collidesWith(tree2.bounds));
   }
 
   update() {
