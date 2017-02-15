@@ -8,14 +8,14 @@ class App {
     this.game = game;
     this.input = this.game.input;
     this.create = new EntityFactory;
-    this.map = new Map('tiny');
+    this.map = new Map('paradise');
     this.commandQueue = new CommandQueue();
     this.inputController = new MapInputController();
   }
 
   get constants() {
     return {
-      'TILE_SIZE': 32,
+      'TILE_SIZE': 16,
     };
   }
 

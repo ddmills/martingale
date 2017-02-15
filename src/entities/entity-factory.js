@@ -7,4 +7,7 @@ export default class EntityFactory {
   shrub(x, y) {
     return entities.shrub(x, y);
   }
+  pineTree(x, y) {
+    return entities.pineTree(x, y);
+  }
 }
