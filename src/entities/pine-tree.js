@@ -3,9 +3,11 @@ import app from '../app';
 
 export default (x, y) => {
   const tree = entity()
-    .add('sprite', app.worldX(x), app.worldY(y) - 16, 16, 32, 'pine-tree')
+    .add('position', x, y)
+    .add('sprite', 'pine-tree')
+    .add('position-bound-sprite', 0, -16)
     .add('spawnable')
-    .on('spawn', () => {
+    .once('spawn', () => {
       tree.render(app.map.static);
       app.map.static.sort('y');
     });
