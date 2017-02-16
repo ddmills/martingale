@@ -8,15 +8,9 @@ export default (x, y) => {
     .add('sprite', 'pine-tree')
     .add('position-bound-sprite', 0, -16)
     .add('spawnable', (x, y) => {
-      const others = geotic.findByComponent('bounds');
-
-      for (let other of others) {
-        if (tree.bounds.collidesWith(other.bounds)) {
-          return false;
-        }
-      }
-
-      return true;
+      return geotic
+        .findByComponent('bounds')
+        .every(e => !tree.bounds.collidesWith(e.bounds));
     })
     .add('bounds')
     .once('spawn', () => {
