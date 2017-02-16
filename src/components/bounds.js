@@ -49,7 +49,8 @@ class Bounds {
   }
 
   collidesWith(other) {
-    return (this.collidesLeft(other) || this.collidesRight(other))
+    return (other != this)
+      && (this.collidesLeft(other) || this.collidesRight(other))
       && (this.collidesTop(other) || this.collidesBottom(other));
   }
 }

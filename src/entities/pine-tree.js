@@ -1,4 +1,5 @@
 import { entity } from 'geotic';
+import geotic from 'geotic';
 import app from '../app';
 
 export default (x, y) => {
@@ -6,11 +7,22 @@ export default (x, y) => {
     .add('position', x, y)
     .add('sprite', 'pine-tree')
     .add('position-bound-sprite', 0, -16)
-    .add('spawnable')
+    .add('spawnable', (x, y) => {
+      const others = geotic.findByComponent('bounds');
+
+      for (let other of others) {
+        if (tree.bounds.collidesWith(other.bounds)) {
+          return false;
+        }
+      }
+
+      return true;
+    })
     .add('bounds')
     .once('spawn', () => {
       tree.render(app.map.static);
       app.map.static.sort('y');
+      console.log('tree spawned.');
     });
 
   return tree;

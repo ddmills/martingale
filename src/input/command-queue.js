@@ -18,7 +18,6 @@ export default class CommandQueue {
   }
 
   push(command) {
-    console.log('pushing', command.constructor.name);
     this.commands.push(command);
   }
 }
