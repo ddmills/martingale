@@ -1,4 +1,5 @@
 import { component } from 'geotic';
+import app from '../app';
 
 class Bounds {
   constructor(position, width = 1, height = 1, offsetX = 0, offsetY = 0) {
@@ -7,6 +8,22 @@ class Bounds {
     this.height = height;
     this.offsetX = offsetX;
     this.offsetY = offsetY;
+  }
+
+  get worldX() {
+    return app.worldX(this.leftBound);
+  }
+
+  get worldY() {
+    return app.worldY(this.topBound);
+  }
+
+  get worldWidth() {
+    return this.width * app.constants.TILE_SIZE;
+  }
+
+  get worldHeight() {
+    return this.height * app.constants.TILE_SIZE;
   }
 
   get leftBound() {
@@ -52,6 +69,17 @@ class Bounds {
     return (other != this)
       && (this.collidesLeft(other) || this.collidesRight(other))
       && (this.collidesTop(other) || this.collidesBottom(other));
+  }
+
+  debug() {
+    const rect = new Phaser.Rectangle(
+      this.worldX,
+      this.worldY,
+      this.worldWidth,
+      this.worldHeight
+    );
+
+    app.game.debug.rectangle(rect, '#e300ff', false);
   }
 }
 

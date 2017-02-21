@@ -2,6 +2,7 @@ import EntityFactory from './entities/entity-factory';
 import CommandQueue from './input/command-queue';
 import MapInputController from './input/controllers/map-input-controller';
 import Map from './prefabs/map';
+import BoundsSystem from './systems/bounds';
 
 class App {
   init(game) {
@@ -11,6 +12,11 @@ class App {
     this.map = new Map('paradise');
     this.commandQueue = new CommandQueue();
     this.inputController = new MapInputController();
+    this.systems = {
+      bounds: new BoundsSystem,
+    };
+
+    this.systems.bounds.debug = true;
   }
 
   get constants() {
@@ -38,6 +44,7 @@ class App {
   update() {
     this.inputController.handle();
     this.commandQueue.processAll();
+    this.systems.bounds.update();
   }
 };
 
