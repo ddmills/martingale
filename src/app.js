@@ -16,7 +16,7 @@ class App {
       bounds: new BoundsSystem,
     };
 
-    this.systems.bounds.debug = true;
+    // this.systems.bounds.debug = true;
   }
 
   get constants() {

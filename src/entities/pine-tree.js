@@ -19,5 +19,9 @@ export default (x, y) => {
       console.log('tree spawned.');
     });
 
+  setTimeout(() => {
+    tree.destroy();
+  }, 2000);
+
   return tree;
 };
