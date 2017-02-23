@@ -2,7 +2,8 @@ import EntityFactory from './entities/entity-factory';
 import CommandQueue from './input/command-queue';
 import MapInputController from './input/controllers/map-input-controller';
 import Map from './prefabs/map';
-import BoundsSystem from './systems/bounds';
+import BoundSystem from './systems/bounds-system';
+import AgentSystem from './systems/agent-system';
 
 class App {
   init(game) {
@@ -13,7 +14,8 @@ class App {
     this.commandQueue = new CommandQueue();
     this.inputController = new MapInputController();
     this.systems = {
-      bounds: new BoundsSystem,
+      bounds: new BoundSystem,
+      agents: new AgentSystem,
     };
 
     // this.systems.bounds.debug = true;
@@ -22,6 +24,7 @@ class App {
   get constants() {
     return {
       'TILE_SIZE': 16,
+      'MAP_WIDTH': 16,
     };
   }
 
@@ -45,6 +48,7 @@ class App {
     this.inputController.handle();
     this.commandQueue.processAll();
     this.systems.bounds.update();
+    this.systems.agents.update(this.game.time.elapsedMS);
   }
 };
 

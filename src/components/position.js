@@ -19,7 +19,6 @@ class Position {
     const oldPosition = this.compacted;
     this._x = newX;
     const newPosition = this.compacted;
-    console.log('emit position changed');
     this.entity.emit('position-changed', oldPosition, newPosition);
   }
 
