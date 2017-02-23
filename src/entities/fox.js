@@ -3,21 +3,21 @@ import geotic from 'geotic';
 import app from '../app';
 
 export default (x, y) => {
-  const tree = entity()
+  const fox = entity()
     .add('position', x, y)
-    .add('sprite', 'pine-tree')
-    .add('position-bound-sprite', 0, -16)
+    .add('sprite', 'fox')
+    .add('position-bound-sprite')
     .add('spawnable', (x, y) => {
       return geotic
         .findByComponent('bounds')
-        .every(e => !tree.bounds.collidesWith(e.bounds));
+        .every(e => !fox.bounds.collidesWith(e.bounds));
     })
     .add('bounds')
     .once('spawn', () => {
-      tree.render(app.map.static);
+      fox.render(app.map.static);
       app.map.static.sort('y');
-      console.log('tree spawned.');
+      console.log('fox spawned.');
     });
 
-  return tree;
+  return fox;
 };

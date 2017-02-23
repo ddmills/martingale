@@ -10,4 +10,7 @@ export default class EntityFactory {
   pineTree(x, y) {
     return entities.pineTree(x, y);
   }
+  fox(x, y) {
+    return entities.fox(x, y);
+  }
 }

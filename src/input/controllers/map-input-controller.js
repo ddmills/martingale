@@ -17,13 +17,14 @@ export default class MapInputController extends InputController {
     this.tileY = app.tileY(this.mouseY);
 
     if (this.leftMouseButtonDown) {
-      const pine = app.create.pineTree(this.tileX, this.tileY);
+      // const pine = app.create.pineTree(this.tileX, this.tileY);
+      const fox = app.create.fox(this.tileX, this.tileY);
 
-      if (pine.canSpawnAt(this.tileX, this.tileY)) {
-        const command = new SpawnEntityCommand(pine);
+      if (fox.canSpawnAt(this.tileX, this.tileY)) {
+        const command = new SpawnEntityCommand(fox);
         this.queueCommand(command);
       } else {
-        pine.destroy();
+        fox.destroy();
       }
     }
 
