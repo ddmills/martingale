@@ -173,7 +173,7 @@ var TagSignature = function (_Signature) {
   return TagSignature;
 }(Signature);
 
-var reserve = ['t', 'id', 'listeners', 'serialize', 'deserialize', 'add', 'remove', 'has', 'destroy', 'tag', 'untag', 'components', 'on', 'off', 'once', 'emit'];
+var reserve = ['id', 'listeners', 'serialize', 'deserialize', 'add', 'remove', 'has', 'destroy', 'tag', 'tags', 'untag', 'components', 'on', 'off', 'once', 'emit'];
 
 var Entity = function () {
   function Entity(id) {
@@ -577,6 +577,10 @@ var _map = require('./prefabs/map');
 
 var _map2 = _interopRequireDefault(_map);
 
+var _bounds = require('./systems/bounds');
+
+var _bounds2 = _interopRequireDefault(_bounds);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -595,6 +599,11 @@ var App = function () {
       this.map = new _map2.default('paradise');
       this.commandQueue = new _commandQueue2.default();
       this.inputController = new _mapInputController2.default();
+      this.systems = {
+        bounds: new _bounds2.default()
+      };
+
+      // this.systems.bounds.debug = true;
     }
   }, {
     key: 'worldX',
@@ -621,6 +630,7 @@ var App = function () {
     value: function update() {
       this.inputController.handle();
       this.commandQueue.processAll();
+      this.systems.bounds.update();
     }
   }, {
     key: 'constants',
@@ -641,7 +651,7 @@ var app = new App();
 exports.app = app;
 exports.default = app;
 
-},{"./entities/entity-factory":11,"./input/command-queue":16,"./input/controllers/map-input-controller":20,"./prefabs/map":23}],3:[function(require,module,exports){
+},{"./entities/entity-factory":11,"./input/command-queue":16,"./input/controllers/map-input-controller":20,"./prefabs/map":23,"./systems/bounds":27}],3:[function(require,module,exports){
 'use strict';
 
 require('./phaser/bootstrap');
@@ -700,6 +710,12 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _geotic = require('geotic');
 
+var _app = require('../app');
+
+var _app2 = _interopRequireDefault(_app);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var Bounds = function () {
@@ -749,6 +765,33 @@ var Bounds = function () {
       return other != this && (this.collidesLeft(other) || this.collidesRight(other)) && (this.collidesTop(other) || this.collidesBottom(other));
     }
   }, {
+    key: 'debug',
+    value: function debug() {
+      var rect = new Phaser.Rectangle(this.worldX, this.worldY, this.worldWidth, this.worldHeight);
+
+      _app2.default.game.debug.rectangle(rect, '#e300ff', false);
+    }
+  }, {
+    key: 'worldX',
+    get: function get() {
+      return _app2.default.worldX(this.leftBound);
+    }
+  }, {
+    key: 'worldY',
+    get: function get() {
+      return _app2.default.worldY(this.topBound);
+    }
+  }, {
+    key: 'worldWidth',
+    get: function get() {
+      return this.width * _app2.default.constants.TILE_SIZE;
+    }
+  }, {
+    key: 'worldHeight',
+    get: function get() {
+      return this.height * _app2.default.constants.TILE_SIZE;
+    }
+  }, {
     key: 'leftBound',
     get: function get() {
       return this.position.x + this.offsetX;
@@ -782,7 +825,7 @@ var Bounds = function () {
   return new (Function.prototype.bind.apply(Bounds, [null].concat([position], args)))();
 });
 
-},{"geotic":1}],5:[function(require,module,exports){
+},{"../app":2,"geotic":1}],5:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -1083,6 +1126,10 @@ var _app = require('./../app');
   }
 
   var sprite = new Phaser.Sprite(_app.app.game, x, y, key, frame);
+  sprite.unmount = function (e) {
+    sprite.destroy();
+  };
+
   entity.mandate('renderable', sprite);
   return sprite;
 });
@@ -1180,11 +1227,15 @@ exports.default = function (x, y) {
     return _geotic2.default.findByComponent('bounds').every(function (e) {
       return !tree.bounds.collidesWith(e.bounds);
     });
-  }).add('bounds', 2, 2).once('spawn', function () {
+  }).add('bounds').once('spawn', function () {
     tree.render(_app2.default.map.static);
     _app2.default.map.static.sort('y');
     console.log('tree spawned.');
   });
+
+  setTimeout(function () {
+    tree.destroy();
+  }, 2000);
 
   return tree;
 };
@@ -1447,6 +1498,8 @@ var MapInputController = function (_InputController) {
         if (pine.canSpawnAt(this.tileX, this.tileY)) {
           var command = new _spawnEntityCommand2.default(pine);
           this.queueCommand(command);
+        } else {
+          pine.destroy();
         }
       }
 
@@ -1787,4 +1840,54 @@ var Preload = function (_Phaser$State) {
 exports.default = Preload;
 ;
 
-},{}]},{},[3]);
+},{}],27:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _geotic = require('geotic');
+
+var _geotic2 = _interopRequireDefault(_geotic);
+
+var _app = require('../app');
+
+var _app2 = _interopRequireDefault(_app);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var BoundsSystem = function () {
+  function BoundsSystem() {
+    _classCallCheck(this, BoundsSystem);
+
+    this.debug = false;
+  }
+
+  _createClass(BoundsSystem, [{
+    key: 'update',
+    value: function update() {
+      var actors = _geotic2.default.findByComponent('bounds');
+
+      if (this.debug) {
+        actors.forEach(function (actor) {
+          actor.bounds.debug();
+        });
+      } else {
+        _app2.default.game.debug.reset();
+      }
+    }
+  }]);
+
+  return BoundsSystem;
+}();
+
+exports.default = BoundsSystem;
+
+},{"../app":2,"geotic":1}]},{},[3])
+
+//# sourceMappingURL=boot.js.map
