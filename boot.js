@@ -577,9 +577,13 @@ var _map = require('./prefabs/map');
 
 var _map2 = _interopRequireDefault(_map);
 
-var _bounds = require('./systems/bounds');
+var _boundsSystem = require('./systems/bounds-system');
 
-var _bounds2 = _interopRequireDefault(_bounds);
+var _boundsSystem2 = _interopRequireDefault(_boundsSystem);
+
+var _agentSystem = require('./systems/agent-system');
+
+var _agentSystem2 = _interopRequireDefault(_agentSystem);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -600,7 +604,8 @@ var App = function () {
       this.commandQueue = new _commandQueue2.default();
       this.inputController = new _mapInputController2.default();
       this.systems = {
-        bounds: new _bounds2.default()
+        bounds: new _boundsSystem2.default(),
+        agents: new _agentSystem2.default()
       };
 
       // this.systems.bounds.debug = true;
@@ -631,12 +636,14 @@ var App = function () {
       this.inputController.handle();
       this.commandQueue.processAll();
       this.systems.bounds.update();
+      this.systems.agents.update(this.game.time.elapsedMS);
     }
   }, {
     key: 'constants',
     get: function get() {
       return {
-        'TILE_SIZE': 16
+        'TILE_SIZE': 16,
+        'MAP_WIDTH': 16
       };
     }
   }]);
@@ -651,7 +658,7 @@ var app = new App();
 exports.app = app;
 exports.default = app;
 
-},{"./entities/entity-factory":11,"./input/command-queue":16,"./input/controllers/map-input-controller":20,"./prefabs/map":23,"./systems/bounds":27}],3:[function(require,module,exports){
+},{"./entities/entity-factory":12,"./input/command-queue":18,"./input/controllers/map-input-controller":22,"./prefabs/map":25,"./systems/agent-system":29,"./systems/bounds-system":30}],3:[function(require,module,exports){
 'use strict';
 
 require('./phaser/bootstrap');
@@ -703,7 +710,42 @@ var Boot = function (_Phaser$Game) {
 
 new Boot();
 
-},{"./components":5,"./entities":12,"./phaser/bootstrap":21,"./states/game":24,"./states/loading":25,"./states/preload":26}],4:[function(require,module,exports){
+},{"./components":6,"./entities":14,"./phaser/bootstrap":23,"./states/game":26,"./states/loading":27,"./states/preload":28}],4:[function(require,module,exports){
+'use strict';
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _geotic = require('geotic');
+
+var _app = require('./../app');
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Agent = function () {
+  function Agent(behavior) {
+    _classCallCheck(this, Agent);
+
+    this.behavior = behavior;
+  }
+
+  _createClass(Agent, [{
+    key: 'update',
+    value: function update(dt) {
+      this.behavior(dt);
+    }
+  }]);
+
+  return Agent;
+}();
+
+(0, _geotic.component)('agent', function (entity) {
+  var behavior = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : function (dt) {};
+
+  entity.mandate('position');
+  return new Agent(behavior);
+});
+
+},{"./../app":2,"geotic":1}],5:[function(require,module,exports){
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -825,7 +867,7 @@ var Bounds = function () {
   return new (Function.prototype.bind.apply(Bounds, [null].concat([position], args)))();
 });
 
-},{"../app":2,"geotic":1}],5:[function(require,module,exports){
+},{"../app":2,"geotic":1}],6:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -877,6 +919,15 @@ Object.defineProperty(exports, 'bounds', {
   }
 });
 
+var _agent = require('./agent');
+
+Object.defineProperty(exports, 'agent', {
+  enumerable: true,
+  get: function get() {
+    return _interopRequireDefault(_agent).default;
+  }
+});
+
 var _positionBoundSprite = require('./position-bound-sprite');
 
 Object.defineProperty(exports, 'positionBoundSprite', {
@@ -888,7 +939,7 @@ Object.defineProperty(exports, 'positionBoundSprite', {
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-},{"./bounds":4,"./position":7,"./position-bound-sprite":6,"./renderable":8,"./spawnable":9,"./sprite":10}],6:[function(require,module,exports){
+},{"./agent":4,"./bounds":5,"./position":8,"./position-bound-sprite":7,"./renderable":9,"./spawnable":10,"./sprite":11}],7:[function(require,module,exports){
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -938,7 +989,7 @@ var PositionBoundSprite = function () {
   return binder;
 });
 
-},{"./../app":2,"geotic":1}],7:[function(require,module,exports){
+},{"./../app":2,"geotic":1}],8:[function(require,module,exports){
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -975,7 +1026,6 @@ var Position = function () {
       var oldPosition = this.compacted;
       this._x = newX;
       var newPosition = this.compacted;
-      console.log('emit position changed');
       this.entity.emit('position-changed', oldPosition, newPosition);
     },
     get: function get() {
@@ -1013,7 +1063,7 @@ var Position = function () {
   return new Position(entity, x, y);
 });
 
-},{"./../app":2,"geotic":1}],8:[function(require,module,exports){
+},{"./../app":2,"geotic":1}],9:[function(require,module,exports){
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -1047,7 +1097,7 @@ var Renderable = function () {
   return r;
 });
 
-},{"./../app":2,"geotic":1}],9:[function(require,module,exports){
+},{"./../app":2,"geotic":1}],10:[function(require,module,exports){
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -1089,7 +1139,7 @@ var Spawnable = function () {
   return new Spawnable(entity, test);
 });
 
-},{"./../app":2,"geotic":1}],10:[function(require,module,exports){
+},{"./../app":2,"geotic":1}],11:[function(require,module,exports){
 'use strict';
 
 var _geotic = require('geotic');
@@ -1134,7 +1184,7 @@ var _app = require('./../app');
   return sprite;
 });
 
-},{"./../app":2,"geotic":1}],11:[function(require,module,exports){
+},{"./../app":2,"geotic":1}],12:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -1171,6 +1221,11 @@ var EntityFactory = function () {
     value: function pineTree(x, y) {
       return _index2.default.pineTree(x, y);
     }
+  }, {
+    key: 'fox',
+    value: function fox(x, y) {
+      return _index2.default.fox(x, y);
+    }
   }]);
 
   return EntityFactory;
@@ -1178,13 +1233,49 @@ var EntityFactory = function () {
 
 exports.default = EntityFactory;
 
-},{"./index":12}],12:[function(require,module,exports){
+},{"./index":14}],13:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.pineTree = exports.shrub = exports.tower = undefined;
+
+var _geotic = require('geotic');
+
+var _geotic2 = _interopRequireDefault(_geotic);
+
+var _app = require('../app');
+
+var _app2 = _interopRequireDefault(_app);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = function (x, y) {
+  var fox = (0, _geotic.entity)().add('position', x, y).add('sprite', 'fox').add('position-bound-sprite').add('spawnable', function (x, y) {
+    return _geotic2.default.findByComponent('bounds').every(function (e) {
+      return !fox.bounds.collidesWith(e.bounds);
+    });
+  }).add('bounds').add('agent', function (dt) {
+    fox.position.x = fox.position.x - dt * .001;
+    if (fox.position.x <= -fox.bounds.width) {
+      fox.position.x = _app2.default.constants.MAP_WIDTH;
+    }
+  }).once('spawn', function () {
+    fox.render(_app2.default.map.static);
+    _app2.default.map.static.sort('y');
+    console.log('fox spawned.');
+  });
+
+  return fox;
+};
+
+},{"../app":2,"geotic":1}],14:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.fox = exports.pineTree = exports.shrub = exports.tower = undefined;
 
 var _tower = require('./tower');
 
@@ -1193,6 +1284,10 @@ var _tower2 = _interopRequireDefault(_tower);
 var _shrub = require('./shrub');
 
 var _shrub2 = _interopRequireDefault(_shrub);
+
+var _fox = require('./fox');
+
+var _fox2 = _interopRequireDefault(_fox);
 
 var _pineTree = require('./pine-tree');
 
@@ -1203,9 +1298,10 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 exports.tower = _tower2.default;
 exports.shrub = _shrub2.default;
 exports.pineTree = _pineTree2.default;
-exports.default = { tower: _tower2.default, shrub: _shrub2.default, pineTree: _pineTree2.default };
+exports.fox = _fox2.default;
+exports.default = { tower: _tower2.default, shrub: _shrub2.default, pineTree: _pineTree2.default, fox: _fox2.default };
 
-},{"./pine-tree":13,"./shrub":14,"./tower":15}],13:[function(require,module,exports){
+},{"./fox":13,"./pine-tree":15,"./shrub":16,"./tower":17}],15:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -1233,14 +1329,10 @@ exports.default = function (x, y) {
     console.log('tree spawned.');
   });
 
-  setTimeout(function () {
-    tree.destroy();
-  }, 2000);
-
   return tree;
 };
 
-},{"../app":2,"geotic":1}],14:[function(require,module,exports){
+},{"../app":2,"geotic":1}],16:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -1263,7 +1355,7 @@ exports.default = function (x, y) {
   return shrub;
 };
 
-},{"../app":2,"geotic":1}],15:[function(require,module,exports){
+},{"../app":2,"geotic":1}],17:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -1285,7 +1377,7 @@ exports.default = function (x, y) {
   return tower;
 };
 
-},{"../app":2,"geotic":1}],16:[function(require,module,exports){
+},{"../app":2,"geotic":1}],18:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1337,7 +1429,7 @@ var CommandQueue = function () {
 
 exports.default = CommandQueue;
 
-},{}],17:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1363,7 +1455,7 @@ var Command = function () {
 
 exports.default = Command;
 
-},{}],18:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -1408,7 +1500,7 @@ var SpawnEntityCommand = function (_Command) {
 
 exports.default = SpawnEntityCommand;
 
-},{"./command":17}],19:[function(require,module,exports){
+},{"./command":19}],21:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1441,7 +1533,7 @@ var InputController = function () {
 
 exports.default = InputController;
 
-},{}],20:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -1493,13 +1585,14 @@ var MapInputController = function (_InputController) {
       this.tileY = _app2.default.tileY(this.mouseY);
 
       if (this.leftMouseButtonDown) {
-        var pine = _app2.default.create.pineTree(this.tileX, this.tileY);
+        // const pine = app.create.pineTree(this.tileX, this.tileY);
+        var fox = _app2.default.create.fox(this.tileX, this.tileY);
 
-        if (pine.canSpawnAt(this.tileX, this.tileY)) {
-          var command = new _spawnEntityCommand2.default(pine);
+        if (fox.canSpawnAt(this.tileX, this.tileY)) {
+          var command = new _spawnEntityCommand2.default(fox);
           this.queueCommand(command);
         } else {
-          pine.destroy();
+          fox.destroy();
         }
       }
 
@@ -1532,7 +1625,7 @@ var MapInputController = function (_InputController) {
 
 exports.default = MapInputController;
 
-},{"../../app":2,"../commands/spawn-entity-command":18,"./input-controller":19}],21:[function(require,module,exports){
+},{"../../app":2,"../commands/spawn-entity-command":20,"./input-controller":21}],23:[function(require,module,exports){
 'use strict';
 
 var _tile = require('./tile');
@@ -1543,7 +1636,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 Phaser.Tile = _tile2.default;
 
-},{"./tile":22}],22:[function(require,module,exports){
+},{"./tile":24}],24:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1643,7 +1736,7 @@ var Tile = function (_Phaser$Tile) {
 
 exports.default = Tile;
 
-},{}],23:[function(require,module,exports){
+},{}],25:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -1671,7 +1764,7 @@ var Map = function Map(level) {
 
 exports.default = Map;
 
-},{"../app":2}],24:[function(require,module,exports){
+},{"../app":2}],26:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -1710,9 +1803,9 @@ var Game = function (_Phaser$State) {
     value: function create() {
       _app2.default.init(this.game);
 
-      var tree1 = _app2.default.create.pineTree(8, 4).spawn();
-
-      var tree2 = _app2.default.create.pineTree(6, 5).spawn();
+      _app2.default.create.pineTree(8, 4).spawn();
+      _app2.default.create.pineTree(6, 5).spawn();
+      _app2.default.create.fox(14, 6).spawn();
     }
   }, {
     key: 'update',
@@ -1727,7 +1820,7 @@ var Game = function (_Phaser$State) {
 exports.default = Game;
 ;
 
-},{"../app":2,"../entities":12}],25:[function(require,module,exports){
+},{"../app":2,"../entities":14}],27:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -1766,6 +1859,7 @@ var Loading = function (_Phaser$State) {
       this.load.image('flag', 'img/flag.png');
       this.load.image('shrub', 'img/shrub.png');
       this.load.image('pine-tree', 'img/pine-tree.png');
+      this.load.image('fox', 'img/fox.png');
 
       this.load.tilemap('island', 'maps/island.json', null, Phaser.Tilemap.TILED_JSON);
       this.load.tilemap('crazytown', 'maps/crazytown.json', null, Phaser.Tilemap.TILED_JSON);
@@ -1791,7 +1885,7 @@ var Loading = function (_Phaser$State) {
 exports.default = Loading;
 ;
 
-},{}],26:[function(require,module,exports){
+},{}],28:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -1840,7 +1934,49 @@ var Preload = function (_Phaser$State) {
 exports.default = Preload;
 ;
 
-},{}],27:[function(require,module,exports){
+},{}],29:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _geotic = require('geotic');
+
+var _geotic2 = _interopRequireDefault(_geotic);
+
+var _app = require('../app');
+
+var _app2 = _interopRequireDefault(_app);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var AgentSystem = function () {
+  function AgentSystem() {
+    _classCallCheck(this, AgentSystem);
+  }
+
+  _createClass(AgentSystem, [{
+    key: 'update',
+    value: function update(dt) {
+      var actors = _geotic2.default.findByComponent('agent');
+
+      actors.forEach(function (actor) {
+        actor.agent.update(dt);
+      });
+    }
+  }]);
+
+  return AgentSystem;
+}();
+
+exports.default = AgentSystem;
+
+},{"../app":2,"geotic":1}],30:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
