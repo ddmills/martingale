@@ -22,6 +22,8 @@ export default class MapInputController extends InputController {
       if (pine.canSpawnAt(this.tileX, this.tileY)) {
         const command = new SpawnEntityCommand(pine);
         this.queueCommand(command);
+      } else {
+        pine.destroy();
       }
     }
 

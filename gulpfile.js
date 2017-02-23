@@ -5,6 +5,7 @@ const babel = require('babelify');
 const browserify = require('browserify');
 const source = require('vinyl-source-stream');
 const buffer = require('vinyl-buffer');
+const sourcemaps = require('gulp-sourcemaps');
 const browserSync = require('browser-sync');
 
 const PHASER = './node_modules/phaser/build/phaser.min.js';
@@ -25,7 +26,10 @@ gulp.task('deploy', ['build'], () => {
 });
 
 gulp.task('babel', () => {
-  const bundler = browserify('src/boot.js');
+  const bundler = browserify('src/boot.js', {
+    sourceMaps: true,
+    debug: true,
+  });
 
   return bundler
     .transform(babel, { presets: ['es2015'] })
@@ -36,6 +40,8 @@ gulp.task('babel', () => {
     })
     .pipe(source('boot.js'))
     .pipe(buffer())
+    .pipe(sourcemaps.init({ loadMaps: true }))
+    .pipe(sourcemaps.write('./'))
     .pipe(gulp.dest('build'));
 });
 

@@ -29,6 +29,10 @@ component('sprite', (entity, ...args) => {
   }
 
   const sprite = new Phaser.Sprite(app.game, x, y, key, frame);
+  sprite.unmount = (e) => {
+    sprite.destroy();
+  };
+
   entity.mandate('renderable', sprite);
   return sprite;
 });
